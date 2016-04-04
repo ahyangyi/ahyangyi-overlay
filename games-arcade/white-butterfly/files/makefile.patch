@@ -1,0 +1,149 @@
+diff --git a/Makefile b/Makefile
+new file mode 100644
+index 0000000..6dd159e
+--- /dev/null
++++ b/Makefile
+@@ -0,0 +1,15 @@
++CC=gcc
++CFLAGS=-O2 -march=native
++LDFLAGS=-lm -lalleg
++
++SOURCE=$(wildcard *.c)
++OBJECTS=$(patsubst %.c,%.o,$(SOURCE))
++DEPENDENCY=$(wildcard *.h) Makefile
++
++all: butterfly
++
++butterfly: $(OBJECTS)
++	$(CC) $^ $(LDFLAGS) -o $@
++
++%.o: %.c $(DEPENDENCY)
++	$(CC) $< $(CFLAGS) $(LDFLAGS) -c -o $@
+diff --git a/display_init.c b/display_init.c
+index c6dcd8f..f654c27 100644
+--- a/display_init.c
++++ b/display_init.c
+@@ -627,7 +627,7 @@ void prepare_circles(void)
+    }
+  }
+ 
+-
++ destroy_bitmap(temp_bitmap);
+ 
+  for (i = 0; i < RLE_RINGS; i ++)
+  {
+@@ -665,10 +665,6 @@ void prepare_circles(void)
+   }
+   destroy_bitmap(temp_bitmap);
+  }
+-
+-  destroy_bitmap(temp_bitmap);
+-  // temp_bitmap is not created each time through loop for icircles.
+-
+ }
+ 
+ 
+diff --git a/input.c b/input.c
+index 956830f..3593f03 100644
+--- a/input.c
++++ b/input.c
+@@ -86,7 +86,11 @@ static int sshot_counter = 0;
+    blit(screen, scrshot_bmp, 100,0,0,0,600,600);
+ 
+   strcpy(sfile, "sshot");
+-  strcat(sfile, itoa(scrs, istr, 10));
++  {
++    char buf[20];
++    sprintf(buf, "%d", scrs);
++    strcat(sfile, buf);
++  }
+   strcat(sfile, ".bmp");
+   save_bitmap(sfile, scrshot_bmp, palet);
+   rectfill(screen, 100, 0, 700, 0, COL_WHITE);
+diff --git a/sound.c b/sound.c
+index be6c43e..3403c3d 100644
+--- a/sound.c
++++ b/sound.c
+@@ -1896,7 +1896,7 @@ void init_sound(void)
+    }
+ 
+    reserve_voices(16, 0); // not sure this is necessary
+-   if (install_sound (DIGI_AUTODETECT, MIDI_AUTODETECT, NULL) == -1)
++   if (install_sound (DIGI_AUTODETECT, MIDI_NONE, NULL) == -1)
+    {
+     exit(1); // don't bother with proper error handling yet. This should just disable sound.
+    }
+diff --git a/stuff.c b/stuff.c
+index 372fd7e..b65a9f3 100644
+--- a/stuff.c
++++ b/stuff.c
+@@ -18,6 +18,7 @@ grand(n) - random number from 1 to n
+ #include "config.h"
+ 
+ #include "allegro.h"
++#include "stuff.h"
+ 
+ #include <math.h>
+ 
+@@ -35,8 +36,6 @@ float decoy_table [ANGLE_1]; // not used
+ float cos_table [ANGLE_1];
+ float sin_table [ANGLE_1];
+ 
+-inline int xpart(int angle, int length);
+-
+ void init_trig(void)
+ {
+  int i;
+@@ -50,16 +49,6 @@ void init_trig(void)
+ 
+ }
+ 
+-inline int xpart(int angle, int length)
+-{
+- return (cos_table [angle & 1023] * length);
+-}
+-
+-inline int ypart(int angle, int length)
+-{
+- return (sin_table [angle & 1023] * length);
+-}
+-
+ float lcos(int angle)
+ {
+  return cos_table [angle & 1023];
+diff --git a/stuff.h b/stuff.h
+index 5bc434c..7c3102d 100644
+--- a/stuff.h
++++ b/stuff.h
+@@ -1,3 +1,4 @@
++#pragma once
+ void init_trig(void);
+ 
+ float angle_to_radians(int angle);
+@@ -7,8 +8,7 @@ int grand(int number);
+ int crandom(int number);
+ int turn_towards_angle(int angle, int tangle, int turning);
+ int turn_towards_xy(int x1, int y1, int x2, int y2, int angle, int turning);
+-inline int xpart(int angle, int length);
+-inline int ypart(int angle, int length);
++
+ int pulsate(int speed, int amount, int county);
+ int angle_difference(int a1, int a2);
+ 
+@@ -18,3 +18,16 @@ int delta_turn_towards_xy(int x1, int y1, int x2, int y2, int angle, int turning
+ int pos_or_neg(int a);
+ int odd_even(int v);
+ char coin(void);
++
++extern float cos_table [ANGLE_1];
++extern float sin_table [ANGLE_1];
++
++inline static int xpart(int angle, int length)
++{
++ return (cos_table [angle & 1023] * length);
++}
++
++inline static int ypart(int angle, int length)
++{
++ return (sin_table [angle & 1023] * length);
++}
