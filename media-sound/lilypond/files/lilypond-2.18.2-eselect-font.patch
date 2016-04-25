@@ -1,0 +1,100 @@
+diff --git a/configure.ac b/configure.ac
+index 008befe..01ecc59 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -56,51 +56,6 @@ STEPMAKE_COMPILE
+ 
+ AC_CHECK_PROG(FCLIST, fc-list, fc-list)
+ AC_MSG_CHECKING([for New Century Schoolbook PFB files])
+-AC_SUBST(NCSB_SOURCE_FILES)
+-AC_SUBST(NCSB_DIR)
+-if test "$NCSB_DIR" = ""; then
+-  if test "$FCLIST" != ""; then
+-    NCSB_FILE=`$FCLIST "Century Schoolbook L:foundry=urw:fontformat=Type 1:lang=ru" file \
+-              | head -n 1`
+-    if test "$NCSB_FILE" != ""; then
+-      NCSB_FILE=`echo $NCSB_FILE | sed 's/\(:.*\)$//g'`
+-      NCSB_FILE=`$PYTHON "$srcdir/scripts/auxiliar/readlink.py" $NCSB_FILE`
+-      NCSB_DIR=`AS_DIRNAME($NCSB_FILE)`
+-    fi
+-  fi
+-fi
+-if test "$NCSB_DIR" != "" ;  then
+-  for f in c059013l.pfb c059016l.pfb c059033l.pfb c059036l.pfb; do
+-    if test ! -f "$NCSB_DIR/$f"; then
+-      MISSING_NCSB_SOURCE_FILES="$f $MISSING_NCSB_SOURCE_FILES"
+-    else
+-      if test "`grep Cyrillic "$NCSB_DIR/$f"`" = ""; then
+-        INCOMPLETE_NCSB_SOURCE_FILES="$f $INCOMPLETE_NCSB_SOURCE_FILES"
+-      else
+-        NCSB_SOURCE_FILES="$NCSB_DIR/$f $NCSB_SOURCE_FILES"
+-      fi
+-    fi
+-  done
+-fi
+-if test "$NCSB_DIR" = "" -o "$MISSING_NCSB_SOURCE_FILES" != "$INCOMPLETE_NCSB_SOURCE_FILES"; then
+-  AC_MSG_RESULT(no)
+-  STEPMAKE_ADD_ENTRY(REQUIRED,International New Century Schoolbook fonts)
+-  if test "$NCSB_DIR" = ""; then
+-    if test "$FCLIST" = ""; then
+-      STEPMAKE_ADD_ENTRY(REQUIRED,'(install the fc-list utility from FontConfig, or use --with-ncsb-dir)')
+-    else
+-      STEPMAKE_ADD_ENTRY(REQUIRED,'(make sure the fc-list utility can see them, or use --with-ncsb-dir)')
+-    fi
+-  fi
+-  if test "$MISSING_NCSB_SOURCE_FILES" != ""; then
+-    STEPMAKE_ADD_ENTRY(REQUIRED,'(these files are missing: $MISSING_NCSB_SOURCE_FILES)')
+-  fi
+-  if test "$INCOMPLETE_NCSB_SOURCE_FILES" != ""; then
+-    STEPMAKE_ADD_ENTRY(REQUIRED,'(these files do not contain Cyrillic characters: $INCOMPLETE_NCSB_SOURCE_FILES)')
+-  fi
+-else
+-  AC_MSG_RESULT(yes)
+-fi
+ 
+ AC_LANG([C++])
+ 
+diff --git a/mf/GNUmakefile b/mf/GNUmakefile
+index 9da619c..eb20557 100644
+--- a/mf/GNUmakefile
++++ b/mf/GNUmakefile
+@@ -36,11 +36,6 @@ OTF_TABLES = $(STAFF_SIZES:%=$(outdir)/feta%.otf-table) \
+ SVG_FILES = $(OTF_FILES:%.otf=%.svg)
+ WOFF_FILES = $(OTF_FILES:%.otf=%.woff)
+ 
+-NCSB_OTFS = $(addprefix $(outdir)/,CenturySchL-Ital.otf \
+-				   CenturySchL-BoldItal.otf \
+-				   CenturySchL-Roma.otf \
+-				   CenturySchL-Bold.otf)
+-
+ LOG_FILES = $(FETA_MF_FILES:%.mf=$(outdir)/%.log)
+ LISP_FILES = $(FETA_MF_FILES:%.mf=$(outdir)/%.lisp)
+ ENC_FILES = $(FETA_MF_FILES:%.mf=$(outdir)/%.enc)
+@@ -102,7 +97,6 @@ ALL_GEN_FILES = $(PE_SCRIPTS) \
+ 		$(ENC_FILES) \
+ 		$(LISP_FILES) \
+ 		$(OTF_TABLES) \
+-		$(NCSB_OTFS) \
+ 		$(OTF_FILES) \
+ 		$(SVG_FILES) \
+ 		$(WOFF_FILES)
+@@ -115,8 +109,7 @@ INSTALLATION_FILES = $(MF_FILES)
+ INSTALLATION_OUT_SUFFIXES = 1 2
+ 
+ INSTALLATION_OUT_DIR1 = $(local_lilypond_datadir)/fonts/otf
+-INSTALLATION_OUT_FILES1 = $(OTF_FILES) \
+-			  $(NCSB_OTFS)
++INSTALLATION_OUT_FILES1 = $(OTF_FILES)
+ 
+ INSTALLATION_OUT_DIR2 = $(local_lilypond_datadir)/fonts/svg
+ INSTALLATION_OUT_FILES2 = $(SVG_FILES) $(WOFF_FILES)
+@@ -194,9 +187,4 @@ local-clean:
+ $(outdir)/fonts.conf:
+ 	echo '<fontconfig><dir>'$(shell cd $(outdir); pwd)'</dir></fontconfig>' > $@
+ 
+-$(NCSB_OTFS): $(NCSB_SOURCE_FILES) \
+-	      $(auxscript-dir)/pfx2ttf.fontforge
+-	$(foreach i, $(basename $(NCSB_SOURCE_FILES)), \
+-		$(FONTFORGE) -script $(auxscript-dir)/pfx2ttf.fontforge \
+-			$(i).pfb $(i).afm $(outdir)/ && ) true
+ # eof
