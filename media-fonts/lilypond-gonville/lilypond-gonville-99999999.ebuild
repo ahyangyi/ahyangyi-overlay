@@ -1,24 +1,26 @@
 EAPI="5"
 
-inherit subversion
+inherit git-r3
 
 DESCRIPTION="Gonville fonts for lilypond"
 HOMEPAGE="http://www.chiark.greenend.org.uk/~sgtatham/gonville/"
-ESVN_REPO_URI="svn://svn.tartarus.org/sgt/gonville"
+EGIT_REPO_URI="git://git.tartarus.org/simon/gonville.git"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~x86 ~amd64"
+KEYWORDS=""
 
 DEPEND="
+	dev-lang/python:2.7
 	media-gfx/fontforge
+	media-gfx/potrace
 	"
 RDEPEND="${DEPEND}"
 
 PREFIX="/usr/share/lilypond/fonts.avail/gonville"
 
 src_compile() {
-	./glyphs.py -lily
+	python2 glyphs.py -lily
 }
 
 src_install() {
