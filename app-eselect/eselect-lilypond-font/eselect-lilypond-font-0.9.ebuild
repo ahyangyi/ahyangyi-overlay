@@ -1,7 +1,7 @@
 EAPI=5
 
 DESCRIPTION="Manages lilypond font replacements"
-HOMEPAGE="http://mirrors.ahyangyi.org"
+HOMEPAGE=""
 SRC_URI="http://mirrors.ahyangyi.org/gentoo/distfiles/${P}.tar.bz2"
 
 LICENSE="GPL-2"
