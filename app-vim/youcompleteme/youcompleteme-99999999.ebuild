@@ -4,7 +4,7 @@
 
 EAPI=5
 
-PYTHON_COMPAT=( python2_6 python2_7 python3_3 python3_4 )
+PYTHON_COMPAT=( python2_6 python2_7 python3_3 python3_4 python3_5 )
 
 inherit eutils multilib python-single-r1 cmake-utils vim-plugin git-r3
 
