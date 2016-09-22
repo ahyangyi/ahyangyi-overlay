@@ -7,7 +7,8 @@ MYD=$(get_version_component_range 1-2)
 DESCRIPTION="NVIDIA CUDA Toolkit (compiler and friends)"
 HOMEPAGE="https://developer.nvidia.com/cuda-downloads"
 CURI="https://developer.nvidia.com/cuda-release-candidate-download"
-SRC_URI="cuda_${PV}_linux.run"
+SRC_URI="cuda_${PV}_linux.run
+cuda_${PV}.1_linux.run"
 
 SLOT="0/${PV}"
 LICENSE="NVIDIA-CUDA"
@@ -27,8 +28,9 @@ RDEPEND="${DEPEND}
 RESTRICT="fetch"
 
 pkg_nofetch() {
-	einfo "Please download the Ubuntu 16.04 \"runfile (local)\" installer"
+	einfo "Please download the Ubuntu 16.04 \"runfile (local)\" installers"
 	einfo "  - cuda_${PV}_linux.run"
+	einfo "  - cuda_${PV}.1_linux.run"
 	einfo "from ${CURI} and place it in ${DISTDIR}"
 }
 
@@ -44,14 +46,15 @@ pkg_setup() {
 }
 
 src_unpack() {
-	unpacker
+	unpacker cuda_${PV}_linux.run
 	unpacker run_files/cuda-linux*.run
+	unpacker cuda_${PV}.1_linux.run
 }
 
 src_prepare() {
 	local cuda_supported_gcc
 
-	cuda_supported_gcc="4.7 4.8 4.9 5.1 5.2 5.3"
+	cuda_supported_gcc="4.7 4.8 4.9 5.1 5.2 5.3 5.4"
 
 	sed \
 		-e "s:CUDA_SUPPORTED_GCC:${cuda_supported_gcc}:g" \
@@ -71,6 +74,8 @@ src_install() {
 		dodoc doc/pdf/*
 		dohtml -r doc/html/*
 	fi
+
+	mv payload/cuda-linux64-mixed-rel-nightly/include/host_config.h include/host_config.h
 
 	mv doc/man/man3/{,cuda-}deprecated.3 || die
 	doman doc/man/man*/*
