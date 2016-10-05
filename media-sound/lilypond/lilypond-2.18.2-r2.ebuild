@@ -1,11 +1,11 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI=5
+EAPI=6
 PYTHON_COMPAT=( python2_7 )
 
-inherit elisp-common autotools eutils python-single-r1
+inherit elisp-common autotools python-single-r1
 
 DESCRIPTION="GNU Music Typesetter"
 SRC_URI="http://download.linuxaudio.org/lilypond/sources/v${PV:0:4}/${P}.tar.gz"
@@ -13,7 +13,7 @@ HOMEPAGE="http://lilypond.org/"
 
 LICENSE="GPL-3 FDL-1.3"
 SLOT="0"
-KEYWORDS="~amd64 ~hppa ~x86"
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~x86"
 LANGS=" ca cs da de el eo es fi fr it ja nl ru sv tr uk vi zh_TW"
 IUSE="debug emacs profile vim-syntax ${LANGS// / linguas_}"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
@@ -30,9 +30,11 @@ RDEPEND=">=app-text/ghostscript-gpl-8.15
 DEPEND="${RDEPEND}
 	app-text/t1utils
 	dev-lang/perl
+	dev-libs/kpathsea
+	>=dev-texlive/texlive-metapost-2013
 	|| (
-		( >=dev-texlive/texlive-metapost-2013 >=dev-tex/metapost-1.803 )
-		<dev-texlive/texlive-metapost-2013
+		>=app-text/texlive-core-2013
+		>=dev-tex/metapost-1.803
 	)
 	virtual/pkgconfig
 	media-gfx/fontforge[png]
@@ -44,6 +46,8 @@ DEPEND="${RDEPEND}
 
 # Correct output data for tests isn't bundled with releases
 RESTRICT="test"
+
+DOCS=( DEDICATION HACKING README.txt ROADMAP )
 
 pkg_setup() {
 	# make sure >=metapost-1.803 is selected if it's installed, bug 498704
@@ -58,9 +62,9 @@ pkg_setup() {
 }
 
 src_prepare() {
-	epatch "${FILESDIR}"/${PN}-2.17.2-tex-docs.patch
-	epatch "${FILESDIR}"/${PN}-2.18.2-eselect-font.patch
-	epatch "${FILESDIR}"/${P}-fontforge.patch
+	eapply "${FILESDIR}"/${PN}-2.17.2-tex-docs.patch
+	eapply "${FILESDIR}"/${PN}-2.18.2-eselect-font.patch
+	eapply "${FILESDIR}"/${P}-fontforge.patch
 
 	if ! use vim-syntax ; then
 		sed -i 's/vim//' GNUmakefile.in || die
@@ -79,7 +83,7 @@ src_prepare() {
 	# remove bundled texinfo file (fixes bug #448560)
 	rm tex/texinfo.tex || die
 
-	epatch_user
+	eapply_user
 
 	eautoreconf
 }
@@ -120,7 +124,7 @@ src_install () {
 
 	python_fix_shebang "${ED}"
 
-	dodoc AUTHORS.txt HACKING NEWS.txt README.txt
+	einstalldocs
 }
 
 pkg_postinst() {
