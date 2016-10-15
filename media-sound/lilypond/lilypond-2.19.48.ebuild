@@ -9,6 +9,7 @@ inherit elisp-common autotools python-single-r1
 
 DESCRIPTION="GNU Music Typesetter"
 SRC_URI="http://download.linuxaudio.org/lilypond/sources/v${PV:0:4}/${P}.tar.gz"
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~x86"
 HOMEPAGE="http://lilypond.org/"
 
 LICENSE="GPL-3 FDL-1.3"
