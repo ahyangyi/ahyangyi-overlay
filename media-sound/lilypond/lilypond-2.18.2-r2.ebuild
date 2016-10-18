@@ -122,6 +122,11 @@ src_install () {
 		elisp-site-file-install "${FILESDIR}"/50${PN}-gentoo.el
 	fi
 
+	# move the files to allow symlink eselects
+	mkdir ${D}/usr/share/lilypond/fonts.avail
+	mv "${D}/usr/share/lilypond/${PV}/fonts" "${D}/usr/share/lilypond/fonts.avail/emmentaler-${PV}" || die
+	ln -s "../fonts" "${D}/usr/share/lilypond/${PV}/fonts"
+
 	python_fix_shebang "${ED}"
 
 	einstalldocs
