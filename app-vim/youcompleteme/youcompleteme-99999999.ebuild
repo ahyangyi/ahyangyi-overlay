@@ -19,7 +19,7 @@ REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 COMMON_DEPEND="
 	${PYTHON_DEPS}
 	clang? ( >=sys-devel/clang-3.3 )
-	dev-libs/boost[python,threads,${PYTHON_USEDEP}]
+	>=dev-libs/boost-1.57[python,threads,${PYTHON_USEDEP}]
 	|| (
 		app-editors/vim[python,${PYTHON_USEDEP}]
 		app-editors/gvim[python,${PYTHON_USEDEP}]
@@ -64,6 +64,9 @@ src_prepare() {
 	done
 
 	rm -r "${S}"/third_party/ycmd/cpp/BoostParts || die "Failed to remove bundled boost"
+
+	# Stupidity: boost::python is installed as is on Gentoo for both python2 & python3. YCM is stupidly trying to find a module called python3.
+	sed -i 's/APPEND Boost_COMPONENTS python3/APPEND Boost_COMPONENTS python/g' "${S}"/third_party/ycmd/cpp/ycm/CMakeLists.txt
 }
 
 src_configure() {
