@@ -1,0 +1,56 @@
+diff --git a/Source/Makefile b/Source/Makefile
+new file mode 100644
+index 0000000..f15ec6b
+--- /dev/null
++++ b/Source/Makefile
+@@ -0,0 +1,16 @@
++CC?=gcc
++CFLAGS?=-O2 -march=native
++CFLAGS_SURPRESS_WARNING=-Wno-format-security
++LDFLAGS=-lm -lalleg
++
++SOURCE=$(wildcard *.c)
++OBJECTS=$(patsubst %.c,%.o,$(SOURCE))
++DEPENDENCY=$(wildcard *.h) Makefile
++
++all: garden
++
++garden: $(OBJECTS)
++	$(CC) $^ $(LDFLAGS) -o $@
++
++%.o: %.c $(DEPENDENCY)
++	$(CC) $< $(CFLAGS) $(CFLAGS_SURPRESS_WARNING) -c -o $@
+diff --git a/Source/stuff.c b/Source/stuff.c
+index 251980c..4ddf56e 100644
+--- a/Source/stuff.c
++++ b/Source/stuff.c
+@@ -50,12 +50,12 @@ void init_trig(void)
+ 
+ }
+ 
+-inline int xpart(int angle, int length)
++int xpart(int angle, int length)
+ {
+  return (cos_table [angle & 1023] * length);
+ }
+ 
+-inline int ypart(int angle, int length)
++int ypart(int angle, int length)
+ {
+  return (sin_table [angle & 1023] * length);
+ }
+diff --git a/Source/stuff.h b/Source/stuff.h
+index 4caa653..3c3250a 100644
+--- a/Source/stuff.h
++++ b/Source/stuff.h
+@@ -7,8 +7,8 @@ int grand(int number);
+ int crandom(int number);
+ int turn_towards_angle(int angle, int tangle, int turning);
+ int turn_towards_xy(int x1, int y1, int x2, int y2, int angle, int turning);
+-inline int xpart(int angle, int length);
+-inline int ypart(int angle, int length);
++int xpart(int angle, int length);
++int ypart(int angle, int length);
+ int pulsate(int speed, int amount, int county);
+ int angle_difference(int a1, int a2);
+ 
