@@ -1,0 +1,357 @@
+diff --git a/Makefile b/Makefile
+new file mode 100644
+index 0000000..44a9419
+--- /dev/null
++++ b/Makefile
+@@ -0,0 +1,20 @@
++CC?=gcc
++CFLAGS?=-O2 -march=native
++CFLAGS_SURPRESS_WARNING?=-Wno-format-security
++LDFLAGS+=-lm -lalleg
++
++SOURCE=$(wildcard *.c)
++OBJECTS=$(patsubst %.c,%.o,$(SOURCE))
++DEPENDENCY=$(wildcard *.h) Makefile
++TARGET=overgod
++
++all: $(TARGET)
++
++$(TARGET): $(OBJECTS)
++	$(CC) $^ $(LDFLAGS) -o $@
++
++%.o: %.c $(DEPENDENCY)
++	$(CC) $< $(CFLAGS) $(CFLAGS_SURPRESS_WARNING) -c -o $@
++
++clean:
++	rm -f $(OBJECTS) $(TARGET)
+diff --git a/cloud.c b/cloud.c
+index c3575ad..6c1f93f 100644
+--- a/cloud.c
++++ b/cloud.c
+@@ -53,16 +53,16 @@ void drag_cloud(int i, float dragged);
+ 
+ void simple_cloud(int colour, int x, int y, int xs, int ys, int size);
+ void simple_cloud_trans(int colour, int x, int y, int xs, int ys, int size);
+-void place_explosion_with_smoke(int x, int y, int xs, int ys, int size, int colours [5]);
+-void place_explosion(int x, int y, int xs, int ys, int size, int colours [5]);
+-void place_burstlet_burst(int x, int y, int xs, int ys, int burstlets, int min_timeout, int random_timeout, int burst, int random_burst, int pretravel, int colours [5]);
++void place_explosion_with_smoke(int x, int y, int xs, int ys, int size, int colours [4]);
++void place_explosion(int x, int y, int xs, int ys, int size, int colours [4]);
++void place_burstlet_burst(int x, int y, int xs, int ys, int burstlets, int min_timeout, int random_timeout, int burst, int random_burst, int pretravel, int colours [4]);
+ 
+ void place_bang(int x, int y, int xs, int ys, int size, int btype);
+ 
+ int create_cloud_minimum(int type, int x, int y, int x2, int y2,
+ int x_speed, int y_speed, int timer, int tickrate,
+ int delta_tickrate, int angle,
+-int status, unsigned char seed, int minimum, int colours [5]);
++int status, unsigned char seed, int minimum, int colours [4]);
+ 
+ 
+ void init_clouds(void)
+@@ -81,7 +81,7 @@ void init_clouds(void)
+ int create_cloud(int type, int x, int y, int x2, int y2,
+ int x_speed, int y_speed, int timer, int tickrate,
+ int delta_tickrate, int angle,
+-int status, unsigned char seed, int colours [5])
++int status, unsigned char seed, int colours [4])
+ {
+ 
+    int c = 0;
+@@ -120,7 +120,7 @@ int status, unsigned char seed, int colours [5])
+ int create_cloud_minimum(int type, int x, int y, int x2, int y2,
+ int x_speed, int y_speed, int timer, int tickrate,
+ int delta_tickrate, int angle,
+-int status, unsigned char seed, int minimum, int colours [5])
++int status, unsigned char seed, int minimum, int colours [4])
+ {
+ 
+    int c = 0;
+@@ -172,7 +172,7 @@ void run_clouds(void)
+ void manage_cloud(int c)
+ {
+ 
+- int passing_colours [5];
++ int passing_colours [4];
+ 
+ //   int x_gain = 0;
+ //   int y_gain = 0;
+@@ -224,7 +224,7 @@ void manage_cloud(int c)
+        0, 0, 4 + grand(3), 2, 5, 1200, 500,
+         4, cloud[c].colour);
+ 
+-//void place_burstlet_burst(int x, int y, int xs, int ys, int burstlets, int min_timeout, int random_timeout, int burst, int random_burst, int pretravel, int colours [5])
++//void place_burstlet_burst(int x, int y, int xs, int ys, int burstlets, int min_timeout, int random_timeout, int burst, int random_burst, int pretravel, int colours [4])
+ 
+ 
+             play_wav_pos(NWAV_MINEBANG, 200 + grand(200), 200, cloud[c].x, cloud[c].y);
+@@ -369,7 +369,7 @@ void drag_cloud(int i, float dragged)
+ void simple_cloud(int colour, int x, int y, int xs, int ys, int size)
+ {
+ 
+-   int passing_colours [5];
++   int passing_colours [4];
+ 
+    passing_colours [0] = colour;
+    
+@@ -387,7 +387,7 @@ void simple_cloud(int colour, int x, int y, int xs, int ys, int size)
+ void simple_cloud_trans(int colour, int x, int y, int xs, int ys, int size)
+ {
+ 
+-   int passing_colours [5];
++   int passing_colours [4];
+ 
+    passing_colours [0] = colour;
+    
+@@ -405,7 +405,7 @@ void simple_cloud_trans(int colour, int x, int y, int xs, int ys, int size)
+ void simple_light(int x, int y, int xs, int ys, int size)
+ {
+ 
+-   int passing_colours [5];
++   int passing_colours [4];
+ 
+    create_cloud(CLOUD_LIGHT,
+     x,
+@@ -420,7 +420,7 @@ void simple_light(int x, int y, int xs, int ys, int size)
+ void simple_shockwave(int colour, int x, int y, int xs, int ys, int size, int speed)
+ {
+ 
+-  int passing_colours [5];
++  int passing_colours [4];
+ 
+   switch(colour)
+   {
+@@ -465,7 +465,7 @@ void simple_shockwave(int colour, int x, int y, int xs, int ys, int size, int sp
+ void place_bang(int x, int y, int xs, int ys, int size, int btype)
+ {
+ 
+-   int passing_colours [5];
++   int passing_colours [4];
+ 
+    create_cloud(CLOUD_BANG,
+     x,
+@@ -477,10 +477,10 @@ void place_bang(int x, int y, int xs, int ys, int size, int btype)
+ 
+ }
+ 
+-void place_explosion(int x, int y, int xs, int ys, int size, int colours [5])
++void place_explosion(int x, int y, int xs, int ys, int size, int colours [4])
+ {
+ 
+-   int passing_colours [5];
++   int passing_colours [4];
+ 
+ 
+    passing_colours [0] = colours [0];
+@@ -525,10 +525,10 @@ void place_explosion(int x, int y, int xs, int ys, int size, int colours [5])
+ }
+ 
+ 
+-void place_explosion_no_light(int x, int y, int xs, int ys, int size, int colours [5])
++void place_explosion_no_light(int x, int y, int xs, int ys, int size, int colours [4])
+ {
+ 
+-   int passing_colours [5];
++   int passing_colours [4];
+ 
+ 
+    passing_colours [0] = colours [0];
+@@ -564,10 +564,10 @@ void place_explosion_no_light(int x, int y, int xs, int ys, int size, int colour
+ 
+ }
+ 
+-void place_small_explosion(int x, int y, int xs, int ys, int size, int colours [5])
++void place_small_explosion(int x, int y, int xs, int ys, int size, int colours [4])
+ {
+ 
+-   int passing_colours [5];
++   int passing_colours [4];
+ 
+ 
+    passing_colours [0] = colours [0];
+@@ -613,10 +613,10 @@ void place_small_explosion(int x, int y, int xs, int ys, int size, int colours [
+ 
+ 
+ 
+-void place_explosion_with_smoke(int x, int y, int xs, int ys, int size, int colours [5])
++void place_explosion_with_smoke(int x, int y, int xs, int ys, int size, int colours [4])
+ {
+ 
+-   int passing_colours [5];
++   int passing_colours [4];
+ 
+    passing_colours [0] = TRANS_LGREY;
+ 
+@@ -669,10 +669,10 @@ void place_explosion_with_smoke(int x, int y, int xs, int ys, int size, int colo
+ 
+ }
+ 
+-void place_rocket_trail(int x, int y, int xs, int ys, int size, int colours [5])
++void place_rocket_trail(int x, int y, int xs, int ys, int size, int colours [4])
+ {
+ 
+-   int passing_colours [5];
++   int passing_colours [4];
+ 
+ 
+    passing_colours [0] = colours [0];
+@@ -708,7 +708,7 @@ void place_rocket_trail(int x, int y, int xs, int ys, int size, int colours [5])
+ }
+ 
+ 
+-void place_speck_burst(int x, int y, int xs, int ys, int specks, int min_timeout, int random_timeout, int scatter, int colours [5])
++void place_speck_burst(int x, int y, int xs, int ys, int specks, int min_timeout, int random_timeout, int scatter, int colours [4])
+ {
+ 
+   int i;
+@@ -726,7 +726,7 @@ void place_speck_burst(int x, int y, int xs, int ys, int specks, int min_timeout
+ 
+ }
+ 
+-void place_line_burst(int x, int y, int xs, int ys, int specks, int min_timeout, int random_timeout, int burst, int random_burst, int colours [5])
++void place_line_burst(int x, int y, int xs, int ys, int specks, int min_timeout, int random_timeout, int burst, int random_burst, int colours [4])
+ {
+ 
+   int i, angle, xsp, ysp, burst_speed;
+@@ -751,7 +751,7 @@ void place_line_burst(int x, int y, int xs, int ys, int specks, int min_timeout,
+ }
+ 
+ 
+-void place_burstlet_burst(int x, int y, int xs, int ys, int burstlets, int min_timeout, int random_timeout, int burst, int random_burst, int pretravel, int colours [5])
++void place_burstlet_burst(int x, int y, int xs, int ys, int burstlets, int min_timeout, int random_timeout, int burst, int random_burst, int pretravel, int colours [4])
+ {
+ 
+ int i, xs2, ys2, x2, y2;
+diff --git a/cloud.h b/cloud.h
+index 55e1604..c1351bc 100644
+--- a/cloud.h
++++ b/cloud.h
+@@ -4,20 +4,20 @@ void init_effects(void);
+ int create_cloud(int type, int x, int y, int x2, int y2,
+ int x_speed, int y_speed, int timer,
+ int tickrate, int delta_tickrate, int angle,
+-int status, unsigned char seed, int colour [5]);
++int status, unsigned char seed, int colour [4]);
+ 
+ void simple_cloud(int colour, int x, int y, int xs, int ys, int size);
+ void simple_cloud_trans(int colour, int x, int y, int xs, int ys, int size);
+ void simple_light(int x, int y, int xs, int ys, int size);
+ void simple_shockwave(int colour, int x, int y, int xs, int ys, int size, int speed);
+-void place_explosion(int x, int y, int xs, int ys, int size, int colours [5]);
+-void place_rocket_trail(int x, int y, int xs, int ys, int size, int colours [5]);
+-void place_explosion_with_smoke(int x, int y, int xs, int ys, int size, int colours [5]);
+-void place_explosion_no_light(int x, int y, int xs, int ys, int size, int colours [5]);
+-void place_small_explosion(int x, int y, int xs, int ys, int size, int colours [5]);
+-void place_speck_burst(int x, int y, int xs, int ys, int specks, int min_timeout, int random_timeout, int scatter, int colours [5]);
+-void place_line_burst(int x, int y, int xs, int ys, int specks, int min_timeout, int random_timeout, int burst, int random_burst, int colours [5]);
+-void place_burstlet_burst(int x, int y, int xs, int ys, int burstlets, int min_timeout, int random_timeout, int burst, int random_burst, int pretravel, int colours [5]);
++void place_explosion(int x, int y, int xs, int ys, int size, int colours [4]);
++void place_rocket_trail(int x, int y, int xs, int ys, int size, int colours [4]);
++void place_explosion_with_smoke(int x, int y, int xs, int ys, int size, int colours [4]);
++void place_explosion_no_light(int x, int y, int xs, int ys, int size, int colours [4]);
++void place_small_explosion(int x, int y, int xs, int ys, int size, int colours [4]);
++void place_speck_burst(int x, int y, int xs, int ys, int specks, int min_timeout, int random_timeout, int scatter, int colours [4]);
++void place_line_burst(int x, int y, int xs, int ys, int specks, int min_timeout, int random_timeout, int burst, int random_burst, int colours [4]);
++void place_burstlet_burst(int x, int y, int xs, int ys, int burstlets, int min_timeout, int random_timeout, int burst, int random_burst, int pretravel, int colours [4]);
+ void place_bang(int x, int y, int xs, int ys, int size, int btype);
+ 
+ void run_clouds(void);
+diff --git a/config.h b/config.h
+index 0317c91..3509fa2 100644
+--- a/config.h
++++ b/config.h
+@@ -1199,7 +1199,7 @@ struct cloudstruct
+  int tickrate;
+  int delta_tickrate;
+  int status;
+- int colour [5];
++ int colour [4];
+ };
+ 
+ struct pickupstruct
+diff --git a/displ_in.c b/displ_in.c
+index e23f581..fa08762 100644
+--- a/displ_in.c
++++ b/displ_in.c
+@@ -1104,9 +1104,9 @@ void make_rle_large_ship(BITMAP *source_bmp, int which_ship)
+    case 3:
+     base_col = COLOUR_RED1; break;
+   }
+-  for (x = 0; x < 50; x ++)
++  for (x = 0; x < 49; x ++)
+   {
+-   for (y = 0; y < 50; y ++)
++   for (y = 0; y < 49; y ++)
+    {
+     px = getpixel(temp_bmp, x, y);
+     if (i == 4)
+diff --git a/display.h b/display.h
+index 27fdedf..3fa597e 100644
+--- a/display.h
++++ b/display.h
+@@ -280,6 +280,8 @@ BMP_SHIELD_DR4,
+ BMP_SHIELD_DR5,
+ BMP_SHIELD_DR6,
+ BMP_SHIELD_DR7,
++BMP_SHIELD_DR8,
++BMP_SHIELD_DL1,
+ BMP_SHIELD_DL2,
+ BMP_SHIELD_DL3,
+ BMP_SHIELD_DL4,
+diff --git a/pickup.c b/pickup.c
+index 51ec414..7a8b4cc 100644
+--- a/pickup.c
++++ b/pickup.c
+@@ -170,7 +170,7 @@ void manage_pickup(int p)
+ 
+ void pickup_explodes(int p, int taken)
+ {
+-  int passing_colours [5];
++  int passing_colours [4];
+ 
+   if (pickup[p].type == PICKUP_SECONDARY)
+   {
+diff --git a/stuff.c b/stuff.c
+index 8027bf2..5c5fc34 100644
+--- a/stuff.c
++++ b/stuff.c
+@@ -52,7 +52,7 @@ float decoy_table [ANGLE_FULL]; // not used
+ float cos_table [ANGLE_FULL];
+ float sin_table [ANGLE_FULL];
+ 
+-inline int xpart(int angle, int length);
++int xpart(int angle, int length);
+ 
+ void init_trig(void)
+ {
+@@ -67,13 +67,13 @@ void init_trig(void)
+  
+ }
+ 
+-inline int xpart(int angle, int length)
++int xpart(int angle, int length)
+ {
+ // return (lcos(angle) * length);// / ANGLE_FULL;
+  return (cos_table [angle & 1023] * length);// / ANGLE_FULL;
+ }
+ 
+-inline int ypart(int angle, int length)
++int ypart(int angle, int length)
+ {
+  return (sin_table [angle & 1023] * length);// / ANGLE_FULL;
+ }
+diff --git a/stuff.h b/stuff.h
+index 2111439..c1e62b7 100644
+--- a/stuff.h
++++ b/stuff.h
+@@ -7,8 +7,8 @@ int grand(int number);
+ int crandom(int number);
+ int turn_towards_angle(int angle, int tangle, int turning);
+ int turn_towards_xy(int x1, int y1, int x2, int y2, int angle, int turning);
+-inline int xpart(int angle, int length);
+-inline int ypart(int angle, int length);
++int xpart(int angle, int length);
++int ypart(int angle, int length);
+ int pulsate(int speed, int amount, int county);
+ int angle_difference(int a1, int a2);
+ 
