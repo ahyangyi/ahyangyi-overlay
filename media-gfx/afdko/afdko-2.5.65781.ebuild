@@ -2,7 +2,7 @@ EAPI="6"
 
 DESCRIPTION="Adobe Font Development Kit for OpenType"
 HOMEPAGE="http://www.adobe.com/devnet/opentype/afdko.html"
-SRC_URI="http://download.macromedia.com/pub/developer/opentype/FDK.2.5.65781/FDK.2.5.65781-LINUX.zip"
+SRC_URI="http://download.macromedia.com/pub/developer/opentype/FDK.${PV}/FDK.${PV}-LINUX.zip"
 
 LICENSE="AFDKL"
 SLOT="0"
