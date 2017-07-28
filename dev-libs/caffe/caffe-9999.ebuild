@@ -3,7 +3,8 @@
 EAPI=5
 
 EGIT_REPO_URI="git://github.com/BVLC/caffe.git"
-PYTHON_COMPAT=( python2_7 python3_4 python3_5 )
+# FIXME: support python3
+PYTHON_COMPAT=( python2_7 )
 
 inherit toolchain-funcs multilib git-r3 python-single-r1
 # Can't use cuda.eclass as nvcc does not like --compiler-bindir set there for some reason
@@ -15,7 +16,7 @@ SRC_URI=""
 LICENSE="BSD-2"
 SLOT="0"
 KEYWORDS=""
-IUSE="cuda python"
+IUSE="cuda +python"
 
 CDEPEND="
 	dev-libs/boost:=[python?]
