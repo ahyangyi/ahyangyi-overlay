@@ -8,7 +8,7 @@ PYTHON_COMPAT=( python2_6 python2_7 python3_3 python3_4 python3_5 )
 
 inherit eutils multilib python-single-r1 cmake-utils vim-plugin git-r3
 
-EGIT_REPO_URI="git://github.com/Valloric/YouCompleteMe.git"
+EGIT_REPO_URI="https://github.com/Valloric/YouCompleteMe.git"
 DESCRIPTION="vim plugin: a code-completion engine for Vim"
 HOMEPAGE="http://valloric.github.io/YouCompleteMe/"
 
