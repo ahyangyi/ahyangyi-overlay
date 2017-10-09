@@ -6,12 +6,12 @@
 		<name>Gentoo Haskell</name>
 	</maintainer>
 	<longdescription>
-		C籥SH (pronounced clash) is a functional hardware description language that
+		C位aSH (pronounced clash) is a functional hardware description language that
 		borrows both its syntax and semantics from the functional programming language
-		Haskell. The C籥SH compiler transforms these high-level descriptions to
+		Haskell. The C位aSH compiler transforms these high-level descriptions to
 		low-level synthesizable VHDL, Verilog, or SystemVerilog.
 		
-		Features of C籥SH:
+		Features of C位aSH:
 		
 		* Strongly typed, but with a very high degree of type inference, enabling both
 		safe and fast prototyping using concise descriptions.
@@ -30,7 +30,7 @@
 		
 		This package provides:
 		
-		* C籥SH Compiler binary using GHC/Haskell as a frontend
+		* C位aSH Compiler binary using GHC/Haskell as a frontend
 		
 		
 		Prelude library: &lt;http://hackage.haskell.org/package/clash-prelude&gt;
