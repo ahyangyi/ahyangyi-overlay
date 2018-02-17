@@ -56,10 +56,10 @@ src_prepare() {
 	for third_party_module in pythonfutures; do
 		rm -r "${S}"/third_party/${third_party_module} || die "Failed to remove third party module ${third_party_module}"
 	done
-	for third_party_module in argparse bottle waitress requests; do
+	for third_party_module in bottle waitress requests; do
 		rm -r "${S}"/third_party/ycmd/third_party/${third_party_module} || die "Failed to remove third party module ${third_party_module}"
 	done
-	for third_party_module in argparse bottle waitress jedi; do
+	for third_party_module in bottle waitress jedi; do
 		rm -r "${S}"/third_party/ycmd/third_party/JediHTTP/vendor/${third_party_module} || die "Failed to remove third party module ${third_party_module}"
 	done
 
