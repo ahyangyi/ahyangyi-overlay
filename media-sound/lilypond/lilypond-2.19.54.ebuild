@@ -1,31 +1,39 @@
-# Copyright 1999-2016 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
-# $Id$
+# Ahyangyi's forked ebuild
+# Remove dependency on tex-gyre fonts; and allows one to use eselect to change the musical font
 
 EAPI=6
 PYTHON_COMPAT=( python2_7 )
 
-inherit elisp-common autotools python-single-r1
+[[ "${PV}" = "9999" ]] && inherit git-r3
+inherit elisp-common autotools python-single-r1 xdg-utils
+
+if [[ "${PV}" = "9999" ]]; then
+	EGIT_REPO_URI="git://git.sv.gnu.org/lilypond.git"
+else
+	SRC_URI="http://download.linuxaudio.org/lilypond/sources/v${PV:0:4}/${P}.tar.gz"
+	KEYWORDS="alpha ~amd64 ~arm ~hppa ~x86"
+fi
 
 DESCRIPTION="GNU Music Typesetter"
-SRC_URI="http://download.linuxaudio.org/lilypond/sources/v${PV:0:4}/${P}.tar.gz"
-KEYWORDS="~alpha ~amd64 ~arm ~hppa ~x86"
 HOMEPAGE="http://lilypond.org/"
 
 LICENSE="GPL-3 FDL-1.3"
 SLOT="0"
 LANGS=" ca cs da de el eo es fi fr it ja nl ru sv tr uk vi zh_TW"
-IUSE="debug emacs profile vim-syntax ${LANGS// / linguas_}"
+IUSE="debug emacs guile2 profile vim-syntax"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 RDEPEND=">=app-text/ghostscript-gpl-8.15
 	>=dev-scheme/guile-1.8.2:12[deprecated,regex]
-	app-eselect/eselect-lilypond-font
-	media-fonts/tex-gyre
 	media-libs/fontconfig
 	media-libs/freetype:2
 	>=x11-libs/pango-1.12.3
 	emacs? ( virtual/emacs )
+	guile2? ( >=dev-scheme/guile-2:12 )
+	!guile2? (
+		>=dev-scheme/guile-1.8.2:12[deprecated,regex]
+		<dev-scheme/guile-2.0:12
+	)
 	${PYTHON_DEPS}"
 DEPEND="${RDEPEND}
 	app-text/t1utils
@@ -62,7 +70,8 @@ pkg_setup() {
 }
 
 src_prepare() {
-	eapply "${FILESDIR}"/lilypond-2.19.46-eselect-font.patch
+	default
+	eapply "${FILESDIR}"/lilypond-2.19.54-remove-font-dependency.patch
 
 	if ! use vim-syntax ; then
 		sed -i 's/vim//' GNUmakefile.in || die
@@ -72,7 +81,7 @@ src_prepare() {
 	sed -i 's/OPTIMIZE -g/OPTIMIZE/' aclocal.m4 || die
 
 	for lang in ${LANGS}; do
-		use linguas_${lang} || rm po/${lang}.po || die
+		has ${lang} ${LINGUAS-${lang}} || rm po/${lang}.po || die
 	done
 
 	# respect AR
@@ -81,9 +90,9 @@ src_prepare() {
 	# remove bundled texinfo file (fixes bug #448560)
 	rm tex/texinfo.tex || die
 
-	eapply_user
-
 	eautoreconf
+
+	xdg_environment_reset #586592
 }
 
 src_configure() {
@@ -91,15 +100,13 @@ src_configure() {
 	# version of texi2html than is currently in the tree
 
 	local myeconfargs+=(
-		--with-texgyre-dir=/usr/share/fonts/tex-gyre
 		--disable-documentation
 		--disable-optimising
 		--disable-pipe
 		$(use_enable debug debugging)
+		$(use_enable guile2)
 		$(use_enable profile profiling)
 	)
-
-	has_version ">=dev-scheme/guile-2" && myeconfargs+=( --enable-guile2 )
 
 	econf "${myeconfargs[@]}"
 }

@@ -1,8 +1,8 @@
 diff --git a/configure.ac b/configure.ac
-index 0a75332..1f465b7 100644
+index d77ea15..5556a02 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -34,9 +34,7 @@ AC_ARG_ENABLE(guile2,
+@@ -34,15 +34,11 @@ AC_ARG_ENABLE(guile2,
  
  AC_ARG_WITH(texgyre-dir,
      [AS_HELP_STRING([--with-texgyre-dir=DIR],
@@ -11,9 +11,16 @@ index 0a75332..1f465b7 100644
 -    [TEXGYRE_DIR=""])
 +		    [location of TeX Gyre fonts.])])
  
+ AC_ARG_WITH(urwotf-dir,
+     [AS_HELP_STRING([--with-urwotf-dir=DIR],
+-		    [location of URW++ OTF fonts.])],
+-    [URWOTF_DIR=$withval],
+-    [URWOTF_DIR=""])
++		    [location of URW++ OTF fonts.])])
+ 
  reloc_b=no
  AC_ARG_ENABLE(relocation,
-@@ -62,47 +60,6 @@ STEPMAKE_COMPILE
+@@ -68,89 +64,7 @@ STEPMAKE_COMPILE
  
  AC_CHECK_PROG(FCLIST, fc-list, fc-list)
  AC_MSG_CHECKING([for TeX Gyre fonts OTF files])
@@ -58,28 +65,72 @@ index 0a75332..1f465b7 100644
 -else
 -  AC_MSG_RESULT(yes)
 -fi
+ AC_MSG_CHECKING([for URW++ OTF files])
+-AC_SUBST(URWOTF_DIR)
+-AC_SUBST(URWOTF_FILES)
+-if test "$URWOTF_DIR" = ""; then
+-  if test "$FCLIST" != ""; then
+-    URWOTF_FILE=`$FCLIST "C059:fontformat=CFF" file | head -n 1`
+-    if test "$URWOTF_FILE" != ""; then
+-      URWOTF_FILE=`echo $URWOTF_FILE | sed 's/\(:.*\)$//g'`
+-      URWOTF_FILE=`$PYTHON "$srcdir/scripts/auxiliar/readlink.py" $URWOTF_FILE`
+-      URWOTF_DIR=`AS_DIRNAME($URWOTF_FILE)`
+-    fi
+-  fi
+-fi
+-if test "$URWOTF_DIR" != "" ;  then
+-  for f in C059-BdIta.otf C059-Bold.otf \
+-           C059-Italic.otf C059-Roman.otf \
+-           NimbusMonoPS-Bold.otf NimbusMonoPS-BoldItalic.otf \
+-           NimbusMonoPS-Italic.otf NimbusMonoPS-Regular.otf \
+-           NimbusSans-Bold.otf NimbusSans-BoldOblique.otf \
+-           NimbusSans-Oblique.otf NimbusSans-Regular.otf; do
+-    if test ! -f "$URWOTF_DIR/$f"; then
+-      MISSING_URWOTF_FILES="$MISSING_URWOTF_FILES $f"
+-    else
+-      URWOTF_FILES="$URWOTF_FILES $f"
+-    fi
+-  done
+-fi
+-if test "$URWOTF_DIR" = "" -o "$MISSING_URWOTF_FILES" != ""; then
+-  AC_MSG_RESULT(no)
+-  STEPMAKE_ADD_ENTRY(OPTIONAL,URW++ OTF fonts)
+-  if test "$URWOTF_DIR" = ""; then
+-    if test "$FCLIST" = ""; then
+-      STEPMAKE_ADD_ENTRY(OPTIONAL,'(install the fc-list utility from FontConfig, or use --with-urwotf-dir)')
+-    else
+-      STEPMAKE_ADD_ENTRY(OPTIONAL,"(download OTF files from 'http://git.ghostscript.com/?p=urw-core35-fonts.git;a=commit;h=79bcdfb34fbce12b592cce389fa7a19da6b5b018' and put them under '~/.local/share/fonts' etc., or use --with-urwotf-dir)")
+-    fi
+-  else
+-    STEPMAKE_ADD_ENTRY(OPTIONAL,'(these files are missing: $MISSING_URWOTF_FILES)')
+-  fi
+-else
+-  AC_MSG_RESULT(yes)
+-fi
  
  AC_LANG([C++])
  
 diff --git a/mf/GNUmakefile b/mf/GNUmakefile
-index 4860f65..db22697 100644
+index 6a64759..db22697 100644
 --- a/mf/GNUmakefile
 +++ b/mf/GNUmakefile
-@@ -35,8 +35,6 @@ OTF_TABLES = $(STAFF_SIZES:%=$(outdir)/feta%.otf-table) \
+@@ -35,9 +35,6 @@ OTF_TABLES = $(STAFF_SIZES:%=$(outdir)/feta%.otf-table) \
  SVG_FILES = $(OTF_FILES:%.otf=%.svg)
  WOFF_FILES = $(OTF_FILES:%.otf=%.woff)
  
 -TEXGYRE_OTFS = $(addprefix $(TEXGYRE_DIR)/,$(TEXGYRE_FILES))
+-URWOTF_OTFS = $(addprefix $(URWOTF_DIR)/,$(URWOTF_FILES))
 -
  LILYPOND_FONTS_CONF = $(outdir)/00-lilypond-fonts.conf \
  		      $(outdir)/99-lilypond-fonts.conf
  
-@@ -86,8 +84,7 @@ INSTALLATION_FILES = $(MF_FILES)
+@@ -87,9 +84,7 @@ INSTALLATION_FILES = $(MF_FILES)
  INSTALLATION_OUT_SUFFIXES = 1 2 3
  
  INSTALLATION_OUT_DIR1 = $(local_lilypond_datadir)/fonts/otf
 -INSTALLATION_OUT_FILES1 = $(OTF_FILES) \
--			  $(TEXGYRE_OTFS)
+-			  $(TEXGYRE_OTFS) \
+-			  $(URWOTF_OTFS)
 +INSTALLATION_OUT_FILES1 = $(OTF_FILES)
  
  INSTALLATION_OUT_DIR2 = $(local_lilypond_datadir)/fonts/svg
