@@ -4,13 +4,13 @@
 
 EAPI=5
 
-PYTHON_COMPAT=( python2_6 python2_7 python3_3 python3_4 python3_5 )
+PYTHON_COMPAT=( python2_6 python2_7 python3_3 python3_4 python3_5 python3_6 )
 
 inherit eutils multilib python-single-r1 cmake-utils vim-plugin git-r3
 
 EGIT_REPO_URI="https://github.com/Valloric/YouCompleteMe.git"
 DESCRIPTION="vim plugin: a code-completion engine for Vim"
-HOMEPAGE="http://valloric.github.io/YouCompleteMe/"
+HOMEPAGE="https://valloric.github.io/YouCompleteMe/"
 
 LICENSE="GPL-3"
 IUSE="+clang test"
@@ -19,7 +19,7 @@ REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 COMMON_DEPEND="
 	${PYTHON_DEPS}
 	clang? ( >=sys-devel/clang-3.3 )
-	>=dev-libs/boost-1.57[python,threads,${PYTHON_USEDEP}]
+	dev-libs/boost[python,threads,${PYTHON_USEDEP}]
 	|| (
 		app-editors/vim[python,${PYTHON_USEDEP}]
 		app-editors/gvim[python,${PYTHON_USEDEP}]
@@ -30,7 +30,9 @@ RDEPEND="
 	dev-python/bottle[${PYTHON_USEDEP}]
 	virtual/python-futures[${PYTHON_USEDEP}]
 	dev-python/jedi[${PYTHON_USEDEP}]
+	dev-python/parso[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
+	dev-python/sh[${PYTHON_USEDEP}]
 	dev-python/waitress[${PYTHON_USEDEP}]
 "
 DEPEND="
@@ -39,7 +41,7 @@ DEPEND="
 		>=dev-python/mock-1.0.1[${PYTHON_USEDEP}]
 		>=dev-python/nose-1.3.0[${PYTHON_USEDEP}]
 		dev-cpp/gmock
-		dev-cpp/gtest
+		>=dev-cpp/gtest-1.8.0
 	)
 "
 
@@ -56,13 +58,9 @@ src_prepare() {
 	for third_party_module in pythonfutures; do
 		rm -r "${S}"/third_party/${third_party_module} || die "Failed to remove third party module ${third_party_module}"
 	done
-	for third_party_module in bottle waitress requests; do
+	for third_party_module in bottle waitress requests jedi parso python-future; do
 		rm -r "${S}"/third_party/ycmd/third_party/${third_party_module} || die "Failed to remove third party module ${third_party_module}"
 	done
-	for third_party_module in bottle waitress jedi; do
-		rm -r "${S}"/third_party/ycmd/third_party/JediHTTP/vendor/${third_party_module} || die "Failed to remove third party module ${third_party_module}"
-	done
-
 	rm -r "${S}"/third_party/ycmd/cpp/BoostParts || die "Failed to remove bundled boost"
 
 	# Stupidity: boost::python is installed as is on Gentoo for both python2 & python3. YCM is stupidly trying to find a module called python3.

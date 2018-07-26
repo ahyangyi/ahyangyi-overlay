@@ -1,5 +1,5 @@
-# Copyright 1999-2018 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
+# Ahyangyi's forked ebuild
+# Remove dependency on tex-gyre fonts; and allows one to use eselect to change the musical font
 
 EAPI=6
 PYTHON_COMPAT=( python2_7 )
@@ -73,6 +73,7 @@ pkg_setup() {
 
 src_prepare() {
 	default
+	eapply "${FILESDIR}"/lilypond-2.19.80-remove-font-dependency.patch
 
 	if ! use vim-syntax ; then
 		sed -i 's/vim//' GNUmakefile.in || die
