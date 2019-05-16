@@ -29,11 +29,13 @@ RDEPEND="
 	${COMMON_DEPEND}
 	dev-python/bottle[${PYTHON_USEDEP}]
 	virtual/python-futures[${PYTHON_USEDEP}]
-	dev-python/jedi[${PYTHON_USEDEP}]
-	dev-python/parso[${PYTHON_USEDEP}]
-	dev-python/requests[${PYTHON_USEDEP}]
+	dev-python/future[${PYTHON_USEDEP}]
 	dev-python/sh[${PYTHON_USEDEP}]
 	dev-python/waitress[${PYTHON_USEDEP}]
+	dev-python/requests[${PYTHON_USEDEP}]
+	dev-python/jedi[${PYTHON_USEDEP}]
+	dev-python/parso[${PYTHON_USEDEP}]
+	dev-python/numpydoc[${PYTHON_USEDEP}]
 	$(python_gen_cond_dep 'dev-python/futures[${PYTHON_USEDEP}]' 'python2*')
 "
 DEPEND="
@@ -59,8 +61,14 @@ src_prepare() {
 	for third_party_module in pythonfutures; do
 		rm -r "${S}"/third_party/${third_party_module} || die "Failed to remove third party module ${third_party_module}"
 	done
-	for third_party_module in bottle waitress requests jedi parso; do
+	for third_party_module in bottle waitress; do
 		rm -r "${S}"/third_party/ycmd/third_party/${third_party_module} || die "Failed to remove third party module ${third_party_module}"
+	done
+	for third_party_module in jedi parso numpydoc; do
+		rm -r "${S}"/third_party/ycmd/third_party/jedi_deps/${third_party_module} || die "Failed to remove third party module ${third_party_module}"
+	done
+	for third_party_module in requests; do
+		rm -r "${S}"/third_party/ycmd/third_party/requests_deps/${third_party_module} || die "Failed to remove third party module ${third_party_module}"
 	done
 	rm -r "${S}"/third_party/ycmd/cpp/BoostParts || die "Failed to remove bundled boost"
 
@@ -104,7 +112,7 @@ src_install() {
 	find python third_party -name '*test*' -exec rm -rf {} + || die
 	find python third_party -name '*doc*' -exec rm -rf {} + || die
 	egit_clean
-	rm third_party/ycmd/libclang.so* || die
+	rm third_party/ycmd/third_party/clang/lib/libclang.so* || die
 
 	vim-plugin_src_install
 
