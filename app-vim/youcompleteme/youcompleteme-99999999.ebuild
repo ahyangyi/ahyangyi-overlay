@@ -1,10 +1,6 @@
-# Copyright 1999-2016 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
-# $Id$
-
 EAPI=5
 
-PYTHON_COMPAT=( python2_6 python2_7 python3_3 python3_4 python3_5 python3_6 )
+PYTHON_COMPAT=( python{2_{6,7},3_{4,5,6,7}} )
 
 inherit eutils multilib python-single-r1 cmake-utils vim-plugin git-r3
 
@@ -34,8 +30,6 @@ RDEPEND="
 	dev-python/waitress[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/jedi[${PYTHON_USEDEP}]
-	dev-python/parso[${PYTHON_USEDEP}]
-	dev-python/numpydoc[${PYTHON_USEDEP}]
 	$(python_gen_cond_dep 'dev-python/futures[${PYTHON_USEDEP}]' 'python2*')
 "
 DEPEND="
@@ -67,7 +61,8 @@ src_prepare() {
 	for third_party_module in jedi parso numpydoc; do
 		rm -r "${S}"/third_party/ycmd/third_party/jedi_deps/${third_party_module} || die "Failed to remove third party module ${third_party_module}"
 	done
-	for third_party_module in requests; do
+	for third_party_module in requests idna certifi chardet urllib3; do
+		rm -r "${S}"/third_party/requests_deps/${third_party_module} || die "Failed to remove third party module ${third_party_module}"
 		rm -r "${S}"/third_party/ycmd/third_party/requests_deps/${third_party_module} || die "Failed to remove third party module ${third_party_module}"
 	done
 	rm -r "${S}"/third_party/ycmd/cpp/BoostParts || die "Failed to remove bundled boost"
