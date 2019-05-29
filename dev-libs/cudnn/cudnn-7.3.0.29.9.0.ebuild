@@ -19,6 +19,12 @@ DEPEND="=dev-util/nvidia-cuda-toolkit-${CUDA_PV}*"
 RDEPEND="${DEPEND}"
 
 src_install() {
-	insinto /opt
-	doins -r *
+	insinto /opt/cuda
+	doins cuda/NVIDIA_SLA_cuDNN_Support.txt
+
+	insinto /opt/cuda/targets/x86_64-linux/include
+	doins -r cuda/include/*
+
+	insinto /opt/cuda/targets/x86_64-linux/lib
+	doins -r cuda/lib*/*
 }
