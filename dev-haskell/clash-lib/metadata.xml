@@ -6,7 +6,7 @@
 		<name>Gentoo Haskell</name>
 	</maintainer>
 	<longdescription>
-		CλaSH (pronounced clash) is a functional hardware description language that
+		CλaSH (pronounced 'clash') is a functional hardware description language that
 		borrows both its syntax and semantics from the functional programming language
 		Haskell. The CλaSH compiler transforms these high-level descriptions to
 		low-level synthesizable VHDL, Verilog, or SystemVerilog.
