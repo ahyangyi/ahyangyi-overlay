@@ -1,7 +1,6 @@
 # Patchset maintained at https://github.com/ahyangyi/WhiteButterfly
 
-EAPI=6
-inherit eutils
+EAPI=7
 
 DESCRIPTION="Shoot-em-up game with strange 8-bit pastel colours and partly random music. Three stages, five fighters, many hours of agonising frustration."
 HOMEPAGE="https://www.allegro.cc/depot/WhiteButterfly"
@@ -19,7 +18,7 @@ DEPEND="${RDEPEND}"
 S=${WORKDIR}
 
 src_prepare() {
-	epatch ${FILESDIR}/white-butterfly-1.1-r2.patch
+	eapply ${FILESDIR}/white-butterfly-1.1-r4.patch
 	sed -i -s 's|"gfx|"'${ROOT}/usr/share/games/white-butterfly/gfx'|g' ${S}/display_init.c
 	sed -i -s 's|\.//wavs//|'${ROOT}/usr/share/games/white-butterfly/wavs/'|g' ${S}/sound.c
 	sed -i -s 's|\.//beat//|'${ROOT}/usr/share/games/white-butterfly/beat/'|g' ${S}/sound.c
@@ -33,7 +32,7 @@ src_compile() {
 }
 
 src_install() {
-	dobin butterfly
+	dobin white-butterfly
 	insinto /usr/share/games/white-butterfly
 	doins -r beat gfx wavs
 }
