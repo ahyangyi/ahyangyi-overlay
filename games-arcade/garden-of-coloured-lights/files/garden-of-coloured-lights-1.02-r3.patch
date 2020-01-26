@@ -1,0 +1,93 @@
+diff --git a/Source/Makefile b/Source/Makefile
+new file mode 100644
+index 0000000..f7654da
+--- /dev/null
++++ b/Source/Makefile
+@@ -0,0 +1,18 @@
++CC?=gcc
++CFLAGS?=-O2 -march=native
++LDFLAGS=-lm -lalleg
++
++SOURCE=$(wildcard *.c)
++OBJECTS=$(patsubst %.c,%.o,$(SOURCE))
++DEPENDENCY=$(wildcard *.h) Makefile
++
++all: garden-of-coloured-lights
++
++garden-of-coloured-lights: $(OBJECTS)
++	$(CC) $^ $(LDFLAGS) -o $@
++
++%.o: %.c $(DEPENDENCY)
++	$(CC) $< $(CFLAGS) -c -o $@
++
++clean:
++	rm -f $(OBJECTS) garden-of-coloured-lights
+diff --git a/Source/input.c b/Source/input.c
+index 5f67952..3c7546e 100644
+--- a/Source/input.c
++++ b/Source/input.c
+@@ -1007,7 +1007,7 @@ void jstick_calibrate(void)
+ 
+       msg = calibrate_joystick_name(0);
+ 
+-      textprintf_centre_ex(screen, font, 320, 170, -1, -1, msg);
++      textprintf_centre_ex(screen, font, 320, 170, -1, -1, "%s", msg);
+       textprintf_centre_ex(screen, font, 320, 200, -1, -1, "AND PRESS SPACE");
+ 
+       do
+diff --git a/Source/menu.c b/Source/menu.c
+index c6e1ed2..0691513 100644
+--- a/Source/menu.c
++++ b/Source/menu.c
+@@ -461,7 +461,7 @@ void key_box(const char ktext [], int command)
+  rectfill(display, 210, 200, 430, 250, COL_OUTLINE);
+  rect(display, 211, 201, 429, 249, COL_COL1);
+ 
+- textprintf_centre_ex(display, font, 320, 222, -1, -1, ktext);
++ textprintf_centre_ex(display, font, 320, 222, -1, -1, "%s", ktext);
+ 
+  vsync();
+  blit(display, screen, 0, 0, 0, 0, 640, 480);
+diff --git a/Source/stuff.c b/Source/stuff.c
+index 251980c..d3a6173 100644
+--- a/Source/stuff.c
++++ b/Source/stuff.c
+@@ -50,12 +50,12 @@ void init_trig(void)
+ 
+ }
+ 
+-inline int xpart(int angle, int length)
++int xpart(int angle, int length)
+ {
+  return (cos_table [angle & 1023] * length);
+ }
+ 
+-inline int ypart(int angle, int length)
++int ypart(int angle, int length)
+ {
+  return (sin_table [angle & 1023] * length);
+ }
+@@ -183,7 +183,7 @@ int pulsate(int speed, int amount, int county)
+ void error_message_out(const char *errm)
+ {
+       set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
+-      allegro_message(errm);
++      allegro_message("%s", errm);
+       exit(1);
+ }
+ 
+diff --git a/Source/stuff.h b/Source/stuff.h
+index 4caa653..3c3250a 100644
+--- a/Source/stuff.h
++++ b/Source/stuff.h
+@@ -7,8 +7,8 @@ int grand(int number);
+ int crandom(int number);
+ int turn_towards_angle(int angle, int tangle, int turning);
+ int turn_towards_xy(int x1, int y1, int x2, int y2, int angle, int turning);
+-inline int xpart(int angle, int length);
+-inline int ypart(int angle, int length);
++int xpart(int angle, int length);
++int ypart(int angle, int length);
+ int pulsate(int speed, int amount, int county);
+ int angle_difference(int a1, int a2);
+ 

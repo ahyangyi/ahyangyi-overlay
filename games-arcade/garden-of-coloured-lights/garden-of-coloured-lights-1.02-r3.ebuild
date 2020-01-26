@@ -1,4 +1,4 @@
-EAPI=6
+EAPI=7
 inherit eutils
 
 DESCRIPTION="A musical shoot-em-up influenced by rRootage, Radiant Silvergun and Rez."
@@ -17,10 +17,11 @@ DEPEND="${RDEPEND}"
 S=${WORKDIR}
 
 src_prepare() {
-	epatch ${FILESDIR}/garden-of-coloured-lights-1.02-r1.patch
+	eapply ${FILESDIR}/garden-of-coloured-lights-1.02-r3.patch
 	sed -i -s 's|"gfx|"'${ROOT}/usr/share/games/garden-of-coloured-lights/gfx'|g' ${S}/Source/display_init.c ${S}/Source/menu.c
 	sed -i -s 's|\.//wavs//|'${ROOT}/usr/share/games/garden-of-coloured-lights/wavs/'|g' ${S}/Source/sound.c
 	sed -i -s 's|\.//beat//|'${ROOT}/usr/share/games/garden-of-coloured-lights/beat/'|g' ${S}/Source/sound.c
+	sed -i -s 's|char sfile_name \[50\]|char sfile_name [512]|g' ${S}/Source/sound.c
 	eapply_user
 }
 
@@ -30,7 +31,7 @@ src_compile() {
 }
 
 src_install() {
-	dobin Source/garden
+	dobin Source/garden-of-coloured-lights
 	insinto /usr/share/games/garden-of-coloured-lights
 	doins -r Garden/{beat,gfx,wavs}
 }
