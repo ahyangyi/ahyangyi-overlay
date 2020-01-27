@@ -1,4 +1,4 @@
-EAPI=5
+EAPI=7
 
 PYTHON_COMPAT=( python{2_{6,7},3_{4,5,6,7}} )
 
@@ -72,16 +72,20 @@ src_prepare() {
 
 	# Stupidity: boost::python is installed as is on Gentoo for both python2 & python3. YCM is stupidly trying to find a module called python3.
 	sed -i 's/APPEND Boost_COMPONENTS python3/APPEND Boost_COMPONENTS python/g' "${S}"/third_party/ycmd/cpp/ycm/CMakeLists.txt
+
+	cmake-utils_src_prepare
+
+	eapply_user
 }
 
 src_configure() {
 	local mycmakeargs=(
-		$(cmake-utils_use_use clang CLANG_COMPLETER)
-		$(cmake-utils_use_use clang SYSTEM_LIBCLANG)
+		-DUSE_CLANG_COMPLETER="$(usex clang)"
+		-DUSE_SYSTEM_LIBCLANG="$(usex clang)"
 		-DUSE_SYSTEM_BOOST=ON
 		-DUSE_SYSTEM_GMOCK=ON
 	)
-	if [ echo ${EPYTHON} | grep python2 > /dev/null ]
+	if [ $(echo ${EPYTHON} | grep python2 > /dev/null) ]
 	then
 		mycmakeargs+=( -DUSE_PYTHON2=ON )
 	else
