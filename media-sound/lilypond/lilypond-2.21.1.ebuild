@@ -60,6 +60,7 @@ RESTRICT="test"
 PATCHES=(
 	"${FILESDIR}"/${P}-fix-font-size.patch
 	"${FILESDIR}"/${P}-remove-font-dependency.patch
+	"${FILESDIR}"/no_fontforge_versioncheck.patch
 )
 
 DOCS=( DEDICATION HACKING README.txt ROADMAP )
