@@ -4,7 +4,7 @@ EAPI=6
 
 PYTHON_COMPAT=( python2_7 python3_{4,5,6,7,8} )
 inherit distutils-r1
-SRC_URI="https://github.com/rougier/freetype-py/archive/1.1.tar.gz -> ${P}.tar.gz"
+SRC_URI="https://github.com/rougier/freetype-py/archive/1.2.1.tar.gz -> ${P}.tar.gz"
 KEYWORDS="~amd64 ~x86"
 
 DESCRIPTION="Python bindings for the freetype library"
