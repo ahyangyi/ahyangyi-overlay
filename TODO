@@ -1,0 +1,1 @@
+* According to https://www.chiark.greenend.org.uk/~sgtatham/gonville/, Lilypond has introduced a new music font switching functionality since 2.20. We need to adapt to that and possibly simplify things.
