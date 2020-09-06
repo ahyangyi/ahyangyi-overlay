@@ -1,17 +1,18 @@
-# Ahyangyi's forked ebuild
-# Remove dependency on tex-gyre fonts; and allows one to use eselect to change the musical font
+# Copyright 1999-2020 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
-PYTHON_COMPAT=( python2_7 )
+EAPI=7
+PYTHON_COMPAT=( python3_{6,7,8,9} )
 
-[[ "${PV}" = "9999" ]] && inherit git-r3
-inherit elisp-common autotools python-single-r1 xdg-utils
+inherit elisp-common autotools python-single-r1 toolchain-funcs xdg-utils
 
 if [[ "${PV}" = "9999" ]]; then
-	EGIT_REPO_URI="git://git.sv.gnu.org/lilypond.git"
+	inherit git-r3
+	EGIT_REPO_URI="https://git.savannah.gnu.org/git/lilypond.git"
 else
-	SRC_URI="http://download.linuxaudio.org/lilypond/sources/v${PV:0:4}/${P}.tar.gz"
-	KEYWORDS="alpha ~amd64 ~arm ~hppa ~x86"
+	MAIN_VER=$(ver_cut 1-2)
+	SRC_URI="http://lilypond.org/download/sources/v${MAIN_VER}/${P}.tar.gz"
+	KEYWORDS="amd64 ~arm arm64 ~hppa x86"
 fi
 
 DESCRIPTION="GNU Music Typesetter"
@@ -19,19 +20,26 @@ HOMEPAGE="http://lilypond.org/"
 
 LICENSE="GPL-3 FDL-1.3"
 SLOT="0"
-LANGS=" ca cs da de el eo es fi fr it ja nl ru sv tr uk vi zh_TW"
 IUSE="debug emacs guile2 profile vim-syntax"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
+BDEPEND="
+	>=dev-texlive/texlive-metapost-2020
+	>=sys-apps/texinfo-4.11
+	>=sys-devel/bison-2.0
+	sys-devel/flex
+	virtual/pkgconfig
+"
 RDEPEND=">=app-text/ghostscript-gpl-8.15
-	>=dev-scheme/guile-1.8.2:12[deprecated,regex]
+	>=dev-scheme/guile-1.8.2:12=[deprecated,regex]
+	app-eselect/eselect-lilypond-font
 	media-libs/fontconfig
 	media-libs/freetype:2
 	>=x11-libs/pango-1.12.3
-	emacs? ( virtual/emacs )
-	guile2? ( >=dev-scheme/guile-2:12 )
+	emacs? ( >=app-editors/emacs-23.1:* )
+	guile2? ( >=dev-scheme/guile-2.2:12 )
 	!guile2? (
-		>=dev-scheme/guile-1.8.2:12[deprecated,regex]
+		>=dev-scheme/guile-1.8.2:12=[deprecated,regex]
 		<dev-scheme/guile-2.0:12
 	)
 	${PYTHON_DEPS}"
@@ -39,21 +47,18 @@ DEPEND="${RDEPEND}
 	app-text/t1utils
 	dev-lang/perl
 	dev-libs/kpathsea
-	>=dev-texlive/texlive-metapost-2013
-	|| (
-		>=app-text/texlive-core-2013
-		>=dev-tex/metapost-1.803
-	)
-	virtual/pkgconfig
-	media-gfx/fontforge[png]
-	>=sys-apps/texinfo-4.11
-	>=sys-devel/bison-2.0
-	sys-devel/flex
-	sys-devel/gettext
-	sys-devel/make"
+	media-gfx/fontforge[png,python]
+	sys-devel/gettext"
 
 # Correct output data for tests isn't bundled with releases
 RESTRICT="test"
+
+PATCHES=(
+	"${FILESDIR}"/${PN}-2.21.1-fix-font-size.patch
+	"${FILESDIR}"/${PN}-fix-cve-2020-17353.patch
+	"${FILESDIR}"/${PN}-2.21.1-remove-font-dependency.patch
+	"${FILESDIR}"/no_fontforge_versioncheck.patch
+)
 
 DOCS=( DEDICATION HACKING README.txt ROADMAP )
 
@@ -71,7 +76,6 @@ pkg_setup() {
 
 src_prepare() {
 	default
-	eapply "${FILESDIR}"/lilypond-2.19.54-remove-font-dependency.patch
 
 	if ! use vim-syntax ; then
 		sed -i 's/vim//' GNUmakefile.in || die
@@ -79,13 +83,6 @@ src_prepare() {
 
 	# respect CFLAGS
 	sed -i 's/OPTIMIZE -g/OPTIMIZE/' aclocal.m4 || die
-
-	for lang in ${LANGS}; do
-		has ${lang} ${LINGUAS-${lang}} || rm po/${lang}.po || die
-	done
-
-	# respect AR
-	sed -i "s/^AR=ar/AR=$(tc-getAR)/" stepmake/stepmake/library-vars.make || die
 
 	# remove bundled texinfo file (fixes bug #448560)
 	rm tex/texinfo.tex || die
@@ -96,19 +93,21 @@ src_prepare() {
 }
 
 src_configure() {
+	# fix hardcoded `ar`
+	sed -i "s/AR=ar/AR=$(tc-getAR)/g" flower/GNUmakefile || die "Failed to fix ar command"
+
 	# documentation generation currently not supported since it requires a newer
 	# version of texi2html than is currently in the tree
 
-	local myeconfargs+=(
+	local myeconfargs=(
 		--disable-documentation
 		--disable-optimising
 		--disable-pipe
 		$(use_enable debug debugging)
-		$(use_enable guile2)
 		$(use_enable profile profiling)
 	)
 
-	econf "${myeconfargs[@]}"
+	econf "${myeconfargs[@]}" AR="$(tc-getAR)"
 }
 
 src_compile() {
@@ -120,7 +119,7 @@ src_compile() {
 	fi
 }
 
-src_install () {
+src_install() {
 	emake DESTDIR="${D}" vimdir=/usr/share/vim/vimfiles install
 
 	# remove elisp files since they are in the wrong directory
