@@ -1,26 +1,33 @@
 EAPI="5"
 
+inherit git-r3
+
 DESCRIPTION="Gonville fonts for lilypond"
 HOMEPAGE="http://www.chiark.greenend.org.uk/~sgtatham/gonville/"
-HASH="bedc4d7-old"
-SRC_URI="https://www.chiark.greenend.org.uk/~sgtatham/gonville/gonville-${PV}.${HASH}.tar.gz"
+EGIT_REPO_URI="https://git.tartarus.org/simon/gonville.git"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="x86 amd64"
+KEYWORDS=""
 
 DEPEND="
+	dev-lang/python
+	media-gfx/fontforge
+	media-gfx/potrace
+	>=media-sound/lilypond-2.22
 	"
 RDEPEND="${DEPEND}"
 
 PREFIX="/usr/share/lilypond/fonts.avail/gonville"
 
-S=${WORKDIR}/gonville-${PV}.${HASH}
+src_compile() {
+	python glyphs.py --lily || die
+}
 
 src_install() {
 	for dir in otf svg; do
 		dodir ${PREFIX}/${dir}
 		insinto ${PREFIX}/${dir}
-		doins ${S}/fontdir/${dir}/*
+		doins ${WORKDIR}/${P}/lilyfonts/*.${dir}
 	done
 }

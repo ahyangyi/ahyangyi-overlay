@@ -10,6 +10,7 @@ SLOT="0"
 KEYWORDS="x86 amd64"
 
 DEPEND="
+	>=media-sound/lilypond-2.22
 	"
 RDEPEND="${DEPEND}"
 

@@ -4,29 +4,30 @@ inherit git-r3
 
 DESCRIPTION="Gonville fonts for lilypond"
 HOMEPAGE="http://www.chiark.greenend.org.uk/~sgtatham/gonville/"
-EGIT_REPO_URI="git://git.tartarus.org/simon/gonville.git"
+EGIT_REPO_URI="https://git.tartarus.org/simon/gonville.git"
 
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS=""
 
 DEPEND="
-	dev-lang/python:2.7
+	dev-lang/python
 	media-gfx/fontforge
 	media-gfx/potrace
+	>=media-sound/lilypond-2.22
 	"
 RDEPEND="${DEPEND}"
 
-PREFIX="/usr/share/lilypond/fonts.avail/gonville"
+PREFIX="/usr/share/lilypond/fonts"
 
 src_compile() {
-	python2 glyphs.py -lily
+	python glyphs.py --lily || die
 }
 
 src_install() {
 	for dir in otf svg; do
 		dodir ${PREFIX}/${dir}
 		insinto ${PREFIX}/${dir}
-		doins ${WORKDIR}/${P}/lilyfonts/${dir}/*
+		doins ${WORKDIR}/${P}/lilyfonts/*.${dir}
 	done
 }
