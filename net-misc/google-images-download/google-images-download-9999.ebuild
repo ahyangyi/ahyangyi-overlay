@@ -1,6 +1,6 @@
 EAPI=6
 
-PYTHON_COMPAT=( python2_7 python3_{4,5,6} )
+PYTHON_COMPAT=( python2_7 python3_{5,6,7,8,9,10} )
 inherit distutils-r1
 EGIT_REPO_URI="https://github.com/hardikvasa/google-images-download.git"
 inherit git-r3
