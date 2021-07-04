@@ -1,0 +1,13 @@
+diff --git a/main.c b/main.c
+index 2129ae2..1ff7a37 100644
+--- a/main.c
++++ b/main.c
+@@ -46,7 +46,7 @@ struct enemystruct enemy [NO_ENEMIES];
+ struct ebulletstruct ebullet [NO_EBULLETS];
+ struct pbulletstruct pbullet [NO_PBULLETS];
+ struct arenastruct arena;
+-struct eclassstruct eclass [NO_ENEMY_TYPES];
++extern struct eclassstruct eclass [NO_ENEMY_TYPES];
+ struct cloudstruct cloud [NO_CLOUDS];
+ struct bossstruct boss;
+ 

@@ -19,6 +19,7 @@ S=${WORKDIR}
 
 src_prepare() {
 	eapply ${FILESDIR}/white-butterfly-1.1-r4.patch
+	eapply ${FILESDIR}/white-butterfly-1.1-r5.patch
 	sed -i -s 's|"gfx|"'${ROOT}/usr/share/games/white-butterfly/gfx'|g' ${S}/display_init.c
 	sed -i -s 's|\.//wavs//|'${ROOT}/usr/share/games/white-butterfly/wavs/'|g' ${S}/sound.c
 	sed -i -s 's|\.//beat//|'${ROOT}/usr/share/games/white-butterfly/beat/'|g' ${S}/sound.c
