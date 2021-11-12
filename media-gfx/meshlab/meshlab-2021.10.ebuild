@@ -39,7 +39,7 @@ S="${WORKDIR}/meshlab-Meshlab-${PV}/src"
 
 PATCHES=(
 	"${FILESDIR}/meshlab-2020.12-disable-updates.patch"
-	#"${FILESDIR}/meshlab-2020.12-find-plugins.patch"
+	"${FILESDIR}/meshlab-2021.10-find-plugins.patch"
 )
 
 src_unpack() {
