@@ -6,8 +6,8 @@ MULTILIB_COMPAT=( abi_x86_64 )
 
 inherit desktop multilib-build unpacker xdg-utils
 
-DESCRIPTION="Official Linux version of Tencent QQ"
-HOMEPAGE="https://im.qq.com/linuxqq/download.html"
+DESCRIPTION="Tencent Meeting"
+HOMEPAGE="https://meeting.tencent.com/"
 LICENSE="Tencent"
 RESTRICT="bindist mirror"
 
@@ -30,9 +30,6 @@ RDEPEND="
 
 DEPEND=""
 BDEPEND=""
-
-QA_PREBUILT="opt/tencent-qq/crashpad_handler
-opt/tencent-qq/qq"
 
 S="${WORKDIR}"
 
