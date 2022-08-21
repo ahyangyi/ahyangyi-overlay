@@ -2,7 +2,7 @@ EAPI=7
 
 PYTHON_COMPAT=( python{2_{6,7},3_{4,5,6,7,8}} )
 
-inherit eutils multilib python-single-r1 cmake-utils git-r3 vcs-clean
+inherit eutils multilib python-single-r1 cmake git-r3 vcs-clean
 
 EGIT_REPO_URI="https://github.com/ycm-core/ycmd.git"
 DESCRIPTION="A code-completion & code-comprehension server "
