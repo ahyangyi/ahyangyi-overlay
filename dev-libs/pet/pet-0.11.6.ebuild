@@ -20,6 +20,7 @@ S=${WORKDIR}/pet-c8adf54
 src_prepare() {
 	default
 
+	# FIXME: use eautoreconf and somehow pass a correct AC_CONFIG_SUBDIRS
 	autoreconf -i
 }
 
