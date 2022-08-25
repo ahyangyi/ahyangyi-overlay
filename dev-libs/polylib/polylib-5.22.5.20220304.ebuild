@@ -5,7 +5,7 @@ inherit autotools multilib multilib-minimal toolchain-funcs
 DESCRIPTION="Polyhedral library"
 HOMEPAGE="https://repo.or.cz/w/polylib.git"
 SRC_URI="https://repo.or.cz/polylib.git/snapshot/8d610e28e0d8b11dd1c887ea7cc355430b3fad87.tar.gz -> ${P}.tar.gz"
-HASH=3693c58
+HASH="8d610e2"
 
 LICENSE="BSD"
 SLOT="0"
