@@ -1,5 +1,5 @@
 # grabbed from gentoo-zh
-# Please consider using gentoo-zh directly!
+# Please consider use gentoo-zh directly!
 
 EAPI=7
 MULTILIB_COMPAT=( abi_x86_64 )
@@ -11,10 +11,10 @@ HOMEPAGE="https://meeting.tencent.com/"
 LICENSE="Tencent"
 RESTRICT="bindist mirror"
 
-SRC_URI="https://updatecdn.meeting.qq.com/cos/e078bf97365540d9f0ff063f93372a9c/TencentMeeting_0300000000_3.12.0.400_x86_64_default.publish.deb"
+SRC_URI="https://updatecdn.meeting.qq.com/cos/196cdf1a3336d5dca56142398818545f/TencentMeeting_0300000000_2.8.0.1_x86_64.publish.deb"
 
 SLOT="0"
-KEYWORDS="amd64"
+KEYWORDS="~amd64"
 
 # NOTE: sys-devel/gcc and sys-libs/glibc are omitted, not sure if this is right
 RDEPEND="
@@ -44,7 +44,7 @@ src_prepare() {
 src_install() {
 	insinto /opt
 	doins -r opt/wemeet/
-	fperms 0755 /opt/wemeet/bin/{wemeetapp,QtWebEngineProcess}
+	fperms 0755 /opt/wemeet/bin/{wemeetapp,crashpad_handler}
 	dosym ../../opt/wemeet/bin/wemeetapp usr/bin/wemeetapp
 }
 
