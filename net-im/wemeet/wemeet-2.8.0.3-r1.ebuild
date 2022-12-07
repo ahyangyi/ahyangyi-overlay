@@ -7,34 +7,22 @@ inherit desktop unpacker xdg
 
 DESCRIPTION="Wemeet - Tencent Video Conferencing"
 HOMEPAGE="https://wemeet.qq.com"
-
 SRC_URI="
-	amd64? ( https://updatecdn.meeting.qq.com/cos/e078bf97365540d9f0ff063f93372a9c/TencentMeeting_0300000000_3.12.0.400_x86_64_default.publish.deb -> ${P}_amd64.deb )
-	arm64? ( https://updatecdn.meeting.qq.com/cos/11814f6931a0a599f394d8845c223feb/TencentMeeting_0300000000_3.12.0.400_arm64_default.publish.deb -> ${P}_arm64.deb )
+	amd64? ( mirror+https://updatecdn.meeting.qq.com/cos/3cdd365cd90f221fb345ab73c4746e1f/TencentMeeting_0300000000_${PV}_x86_64_default.publish.deb -> ${P}_amd64.deb )
+	arm64? ( mirror+https://updatecdn.meeting.qq.com/cos/1584cf78c2285b450a4bc9d0b3bb8720/TencentMeeting_0300000000_${PV}_arm64_default.publish.deb -> ${P}_arm64.deb )
 "
 
 LICENSE="wemeet_license"
 SLOT="0"
 KEYWORDS="-* ~amd64 ~arm64"
 
-RESTRICT="bindist test"
+RESTRICT="bindist test strip"
 
 DEPEND="
-	dev-qt/qtconcurrent:5
-	dev-qt/qtcore:5
-	dev-qt/qtgui:5
-	dev-qt/qtnetwork:5
-	dev-qt/qtpositioning:5
-	dev-qt/qtprintsupport:5
-	dev-qt/qtwebchannel:5
-	dev-qt/qtwebengine:5
-	dev-qt/qtwidgets:5
-	dev-qt/qtx11extras:5
-	dev-qt/qtxml:5
-	dev-qt/qtlocation:5
-	media-sound/pulseaudio
-	x11-libs/libXinerama
-	x11-libs/libXrandr
+		dev-libs/nss
+		dev-util/desktop-file-utils
+		media-sound/pulseaudio
+		x11-libs/libX11
 "
 RDEPEND="${DEPEND}"
 BDEPEND="dev-util/patchelf"
@@ -43,11 +31,14 @@ S="${WORKDIR}"
 QA_PREBUILT="opt/${PN}/*"
 
 src_install() {
-	# To fix bug, remove unused lib, use system lib instead
-	mv opt/${PN}/lib opt/${PN}/lib.orig || die
-	mkdir opt/${PN}/lib || die
-	cp -rfL opt/${PN}/lib.orig/lib{ImSDK,desktop_common,nxui*,qt_*,ui*,wemeet*,xcast,xcast_codec,xnn*,Qt5{Egl,Pdf,Web}*,icu*,service_manager}.so opt/${PN}/lib/ || die
-	rm -r opt/${PN}/lib.orig || die
+	# Fix duplicate files causing failures if FEATURES=splitdebug
+	local f
+	for f in libFcitxQt5DBusAddons.so libFcitxQt5WidgetsAddons.so; do
+		rm "opt/${PN}/lib/${f}" "opt/${PN}/lib/${f}.1" || die
+		ln -s "${f}.1.0" "opt/${PN}/lib/${f}.1" || die
+		ln -s "${f}.1" "opt/${PN}/lib/${f}" || die
+	done
+
 	# Fix RPATHs to ensure the libraries can be found
 	for f in $(find "opt/${PN}/bin" "opt/${PN}/plugins") ; do
 		[[ -f ${f} && $(od -t x1 -N 4 "${f}") == *"7f 45 4c 46"* ]] || continue
@@ -87,23 +78,22 @@ fi;
 
 	insinto "/opt/${PN}"
 	exeinto "/opt/${PN}"
-	doins -r "opt/${PN}/bin" "opt/${PN}/icons" "opt/${PN}/lib" "opt/${PN}/plugins" "opt/${PN}/resources"  "opt/${PN}/translations"
+	doins -r "opt/${PN}/bin" "opt/${PN}/icons" "opt/${PN}/lib" "opt/${PN}/plugins"
 	doexe "opt/${PN}/wemeetapp.sh"
 	fperms +x "/opt/${PN}/bin/wemeetapp"
-	fperms +x "/opt/${PN}/bin/QtWebEngineProcess"
+	fperms +x "/opt/${PN}/bin/crashpad_handler"
 
 	# put launcher into PATH
 	dosym "../../opt/${PN}/wemeetapp.sh" /usr/bin/wemeetapp
 
 	sed -i "s/^Icon=.*/Icon=wemeetapp/g" "usr/share/applications/wemeetapp.desktop" || die
 	sed -i "s/^Exec=.*/Exec=wemeetapp %u/g" "usr/share/applications/wemeetapp.desktop" || die
-	sed -i '$i Comment=Tencent Meeting Linux Client\nComment[zh_CN]=腾讯会议Linux客户端\nKeywords=wemeet;tencent;meeting;' "usr/share/applications/wemeetapp.desktop" || die
 	domenu "usr/share/applications/wemeetapp.desktop"
 	newicon -s scalable "opt/${PN}/wemeet.svg" "wemeetapp.svg"
 	for i in 16 32 64 128 256; do
 		png_file="opt/${PN}/icons/hicolor/${i}x${i}/mimetypes/wemeetapp.png"
 		if [ -e "${png_file}" ]; then
-			newicon -s "${i}" "${png_file}" "wemeetapp.png"
+			newicon -s "${i}" "${png_file}" wemeetapp
 		fi
 	done
 }
