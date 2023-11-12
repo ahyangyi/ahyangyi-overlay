@@ -16,7 +16,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="double-precision minimal"
 
-DEPEND="
+RDEPEND="
 	dev-cpp/eigen:3
 	dev-cpp/muParser
 	dev-libs/gmp:=
@@ -34,7 +34,7 @@ DEPEND="
 	sci-libs/mpir:=
 	sci-mathematics/cgal"
 
-RDEPEND="${DEPEND}"
+DEPEND="${RDEPEND}"
 
 S="${WORKDIR}/meshlab-MeshLab-${PV}/src"
 
@@ -51,6 +51,9 @@ src_unpack() {
 }
 
 src_configure() {
+	# crazy command from https://aur.archlinux.org/packages/meshlab
+	sed -i '1i#include <cstdint>' external/e57/include/E57SimpleData.h external/e57/src/BlobNodeImpl.cpp external/e57/src/BlobNodeImpl.h external/e57/src/Common.cpp external/e57/src/Common.h external/e57/src/CompressedVectorNodeImpl.cpp external/e57/src/CompressedVectorNodeImpl.h external/e57/src/CompressedVectorReaderImpl.cpp external/e57/src/CompressedVectorReaderImpl.h external/e57/src/CompressedVectorWriterImpl.cpp external/e57/src/CompressedVectorWriterImpl.h external/e57/src/E57SimpleData.cpp external/e57/src/NodeImpl.cpp external/e57/src/NodeImpl.h external/e57/src/ReaderImpl.cpp external/e57/src/ReaderImpl.h external/nexus/src/corto/include/corto/tunstall.h external/nexus/src/corto/src/tunstall.cpp external/e57/include/E57Format.h
+
 	CMAKE_BUILD_TYPE=Release
 
 	local mycmakeargs=(
