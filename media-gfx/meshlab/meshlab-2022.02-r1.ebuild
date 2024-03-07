@@ -31,7 +31,6 @@ RDEPEND="
 	media-libs/openctm:=
 	media-libs/qhull:=
 	sci-libs/levmar
-	sci-libs/mpir:=
 	sci-mathematics/cgal"
 
 DEPEND="${RDEPEND}"
