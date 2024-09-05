@@ -2,7 +2,7 @@ EAPI="7"
 
 DESCRIPTION="Gonville fonts for lilypond"
 HOMEPAGE="http://www.chiark.greenend.org.uk/~sgtatham/gonville/"
-HASH="bedc4d7"
+HASH="4ec6d4f"
 SRC_URI="https://www.chiark.greenend.org.uk/~sgtatham/gonville/gonville-${PV}.${HASH}.tar.gz"
 
 LICENSE="GPL-2"
