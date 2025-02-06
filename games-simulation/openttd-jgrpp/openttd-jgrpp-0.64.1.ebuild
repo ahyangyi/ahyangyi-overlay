@@ -9,7 +9,7 @@ SRC_URI="https://github.com/JGRennison/OpenTTD-patches/archive/refs/tags/jgrpp-$
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~arm64 ~ppc64 ~x86"
-IUSE="allegro cpu_flags_x86_sse debug dedicated +fluidsynth icu +lzma lzo +openmedia +png +sdl timidity +truetype +zlib"
+IUSE="allegro cpu_flags_x86_sse debug dedicated +fluidsynth icu +lzma lzo +openmedia +png +sdl timidity +truetype +zlib jgrpp_postfix"
 REQUIRED_USE="!dedicated? ( || ( allegro sdl ) )"
 
 S=${WORKDIR}/OpenTTD-patches-jgrpp-${PV}
@@ -71,11 +71,17 @@ src_prepare() {
 	# of _FORTIFY_SOURCE=2)
 	sed -i -e '/-D_FORTIFY_SOURCE/d' cmake/CompileFlags.cmake || die
 
+	if use jgrpp_postfix; then
+		# Avoid conflict with regular openttd
+		sed -i -e 's/set(CPACK_PACKAGE_NAME "openttd")/set(CPACK_PACKAGE_NAME "openttd-jgrpp")/g' cmake/InstallAndPackage.cmake || die
+	fi
+
 	cmake_src_prepare
 }
 
 src_configure() {
 	local mycmakeargs=(
+		-DBINARY_NAME=$(usex jgrpp_postfix openttd-jgrpp openttd)
 		-DCMAKE_INSTALL_BINDIR=bin
 		-DCMAKE_INSTALL_DATADIR=share
 		-DOPTION_DEDICATED=$(usex dedicated)
@@ -102,6 +108,12 @@ src_configure() {
 
 src_install() {
 	cmake_src_install
+
+	if use jgrpp_postfix; then
+		# make symlinks to help openttd-jgrpp find opengfx/opensfx
+		dosym /usr/share/openttd/baseset/opengfx.obg /usr/share/openttd-jgrpp/baseset/opengfx.obg
+		dosym /usr/share/openttd/baseset/opensfx-1.0.3.tar /usr/share/openttd-jgrpp/baseset/opensfx-1.0.3.tar
+	fi
 
 	if use dedicated ; then
 		newconfd "${FILESDIR}"/openttd.confd-r1 openttd
