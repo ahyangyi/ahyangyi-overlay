@@ -7,7 +7,7 @@ inherit cmake xdg-utils
 
 DESCRIPTION="A system for processing and editing unstructured 3D triangular meshes"
 HOMEPAGE="http://www.meshlab.net"
-VCG_VERSION="2022.02"
+VCG_VERSION="2023.12"
 SRC_URI="https://github.com/cnr-isti-vclab/meshlab/archive/refs/tags/MeshLab-${PV}.tar.gz -> ${P}.tar.gz
 	https://github.com/cnr-isti-vclab/vcglib/archive/refs/tags/${VCG_VERSION}.tar.gz -> vcglib-${VCG_VERSION}.tar.gz"
 
