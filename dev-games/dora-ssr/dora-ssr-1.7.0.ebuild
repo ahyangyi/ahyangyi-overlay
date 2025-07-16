@@ -85,9 +85,9 @@ src_compile() {
 	)
 
 	cd Projects/Linux
-	ln -s ../../../../bgfx-${BGFX_COMMIT} 3rdParty/bgfx
-	ln -s ../../../../bimg-${BIMG_COMMIT} 3rdParty/bimg
-	ln -s ../../../../bx-${BX_COMMIT} 3rdParty/bx
-	ln -s ../../../../GENie-${GENIE_COMMIT} 3rdParty/GENie
+	cp -r ../../../bgfx-${BGFX_COMMIT} 3rdParty/bgfx
+	cp -r ../../../bimg-${BIMG_COMMIT} 3rdParty/bimg
+	cp -r ../../../bx-${BX_COMMIT} 3rdParty/bx
+	cp -r ../../../GENie-${GENIE_COMMIT} 3rdParty/GENie
 	make x86_64
 }
