@@ -45,14 +45,18 @@ inherit cargo
 DESCRIPTION="Dora (Special Super Rare) Game Engine"
 HOMEPAGE="https://dora-ssr.net/"
 
-if [[ ${PV} == 9999 ]] ; then
-	EGIT_REPO_URI="https://github.com/IppClub/Dora-SSR.git"
-	inherit git-r3
-else
-	SRC_URI="https://codeload.github.com/IppClub/Dora-SSR/tar.gz/refs/tags/v${PV} -> dora-ssr-v${PV}.tar.gz ${CARGO_CRATE_URIS}"
+BGFX_COMMIT=ea24c0b7e22b16b2071db3bebf388bf91abdeda4
+BIMG_COMMIT=cf7ecb6dd56217d0178b5a1d3430e0b09f65b9b9
+BX_COMMIT=13f0e6c61495615047422c22d7539cdf02d739f0
+GENIE_COMMIT=3757e9085b1450db1a46fff84de395f2804385b0
 
-	KEYWORDS="~amd64 ~arm64"
-fi
+SRC_URI="https://codeload.github.com/IppClub/Dora-SSR/tar.gz/refs/tags/v${PV} -> dora-ssr-v${PV}.tar.gz
+	https://github.com/pigpigyyy/bgfx/archive/${BGFX_COMMIT}.tar.gz -> bgfx-${BGFX_COMMIT}.tar.gz
+	https://github.com/pigpigyyy/bimg/archive/${BIMG_COMMIT}.tar.gz -> bimg-${BIMG_COMMIT}.tar.gz
+	https://github.com/pigpigyyy/bx/archive/${BX_COMMIT}.tar.gz -> bx-${BX_COMMIT}.tar.gz
+	https://github.com/pigpigyyy/GENie/archive/${GENIE_COMMIT}.tar.gz -> GENie-${GENIE_COMMIT}.tar.gz
+	${CARGO_CRATE_URIS}"
+KEYWORDS="~amd64 ~arm64"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -81,5 +85,9 @@ src_compile() {
 	)
 
 	cd Projects/Linux
+	ln -s ../../../../bgfx-${BGFX_COMMIT} 3rdParty/bgfx
+	ln -s ../../../../bimg-${BIMG_COMMIT} 3rdParty/bimg
+	ln -s ../../../../bx-${BX_COMMIT} 3rdParty/bx
+	ln -s ../../../../GENie-${GENIE_COMMIT} 3rdParty/GENie
 	make x86_64
 }
