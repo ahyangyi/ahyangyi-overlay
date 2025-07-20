@@ -89,5 +89,5 @@ src_compile() {
 	cp -r ../../../bimg-${BIMG_COMMIT} 3rdParty/bimg
 	cp -r ../../../bx-${BX_COMMIT} 3rdParty/bx
 	cp -r ../../../GENie-${GENIE_COMMIT} 3rdParty/GENie
-	make x86_64
+	make x86_64 ARCH=""
 }
