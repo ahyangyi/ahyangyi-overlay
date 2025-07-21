@@ -73,6 +73,12 @@ RDEPEND="
 DEPEND="${RDEPEND}"
 S="${WORKDIR}/Dora-SSR-${PV}"
 
+src_prepare() {
+	eapply_user
+
+	sed -i '/rustup/d' Tools/build-scripts/build_lib_linux_x86_64.sh
+}
+
 src_compile() {
 	# Lua bindings
 	(
