@@ -15,9 +15,6 @@ KEYWORDS="amd64 ~arm64 ~ppc64 ~x86"
 IUSE="allegro cpu_flags_x86_sse debug dedicated +fluidsynth icu +lzma lzo +openmedia +png +sdl timidity +truetype +zlib"
 REQUIRED_USE="!dedicated? ( || ( allegro sdl ) )"
 
-# TODO: On master (after 13.x):
-# - icu-layoutex is gone (https://github.com/OpenTTD/OpenTTD/commit/81d4fa69990abbc18bd83d60658b0eedd66b7447)
-# - icu-le-hb looks like it might be too (https://github.com/OpenTTD/OpenTTD/issues/6922)
 RDEPEND="
 	dedicated? (
 		acct-group/openttd
@@ -28,9 +25,8 @@ RDEPEND="
 		allegro? ( media-libs/allegro:5 )
 		fluidsynth? ( media-sound/fluidsynth )
 		icu? (
-			dev-libs/icu-layoutex:=
-			dev-libs/icu-le-hb
 			>=dev-libs/icu-58.1:=
+			media-libs/harfbuzz
 		)
 		sdl? ( media-libs/libsdl2[sound,video] )
 		truetype? (
@@ -89,6 +85,7 @@ src_configure() {
 		-DCMAKE_DISABLE_FIND_PACKAGE_Fontconfig=$(usex !truetype)
 		-DCMAKE_DISABLE_FIND_PACKAGE_Fluidsynth=$(usex !fluidsynth)
 		-DCMAKE_DISABLE_FIND_PACKAGE_ICU=$(usex !icu)
+		-DCMAKE_DISABLE_FIND_PACKAGE_Harfbuzz=$(usex !icu)
 		-DCMAKE_DISABLE_FIND_PACKAGE_LibLZMA=$(usex !lzma)
 		-DCMAKE_DISABLE_FIND_PACKAGE_LZO=$(usex !lzo)
 		-DCMAKE_DISABLE_FIND_PACKAGE_PNG=$(usex !png)
