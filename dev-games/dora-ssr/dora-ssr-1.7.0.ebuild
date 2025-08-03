@@ -1,7 +1,7 @@
 EAPI=8
 
 LUA_COMPAT=( lua5-1 )
-inherit lua
+inherit lua-single
 
 CRATES="
 	anstream@0.6.18
@@ -80,6 +80,7 @@ src_prepare() {
 }
 
 src_compile() {
+	export LUA_VERSION="$(lua_get_version)"
 	# Lua bindings
 	(
 		cd Tools/tolua++ && lua5.1 tolua++.lua || die 
