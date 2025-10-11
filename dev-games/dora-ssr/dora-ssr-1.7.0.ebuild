@@ -1,7 +1,7 @@
 EAPI=8
 
 LUA_COMPAT=( lua5-1 )
-inherit lua-single
+inherit lua-single rust
 
 CRATES="
 	anstream@0.6.18
@@ -62,16 +62,23 @@ LICENSE="GPL-2"
 SLOT="0"
 IUSE=""
 
+REQUIRED_USE="${LUA_REQUIRED_USE}"
+DEPEND="${RDEPEND}"
 RDEPEND="
+	${LUA_DEPS}
 	media-libs/libsdl2
 	media-libs/mesa
 	dev-libs/openssl
-	dev-lang/lua:5.1
 	dev-lua/luafilesystem
 	dev-lang/rust-bin
 "
-DEPEND="${RDEPEND}"
+BDEPEND="virtual/pkgconfig"
 S="${WORKDIR}/Dora-SSR-${PV}"
+
+pkg_setup() {
+	lua-single_pkg_setup
+	rust_pkg_setup
+}
 
 src_prepare() {
 	eapply_user
