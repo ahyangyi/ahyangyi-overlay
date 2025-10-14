@@ -1,7 +1,7 @@
 EAPI=8
 
 LUA_COMPAT=( lua5-1 )
-inherit lua-single rust
+inherit lua-single rust cmake
 
 CRATES="
 	anstream@0.6.18
@@ -84,13 +84,16 @@ src_prepare() {
 	eapply_user
 
 	sed -i '/rustup/d' Tools/build-scripts/build_lib_linux_x86_64.sh
+
+	cd Projects/Linux
+	cmake_src_prepare
 }
 
 src_compile() {
 	export LUA_VERSION="$(lua_get_version)"
 	# Lua bindings
 	(
-		cd Tools/tolua++ && lua5.1 tolua++.lua || die 
+		cd Tools/tolua++ && ${LUA} tolua++.lua || die 
 	)
 
 	# Rust bindings
@@ -103,5 +106,15 @@ src_compile() {
 	cp -r ../../../bimg-${BIMG_COMMIT} 3rdParty/bimg
 	cp -r ../../../bx-${BX_COMMIT} 3rdParty/bx
 	cp -r ../../../GENie-${GENIE_COMMIT} 3rdParty/GENie
-	make x86_64 ARCH=""
+	emake dep_x86_64 lib_x86_64 ARCH=""
+
+	cmake_src_configure
+	cmake_build
+}
+
+src_install() {
+	dobin Projects/Linux_build/dora-ssr
+
+	insinto /usr/share/dora-ssr
+	doins -r Assets/*
 }
