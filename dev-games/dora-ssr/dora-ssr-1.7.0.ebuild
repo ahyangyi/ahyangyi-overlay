@@ -1,8 +1,6 @@
 EAPI=8
 
-LUA_COMPAT=( lua5-1 )
-inherit lua-single rust cmake
-
+LUA_COMPAT=( lua5-1 lua5-3 lua5-4 )
 CRATES="
 	anstream@0.6.18
 	anstyle-parse@0.2.6
@@ -40,7 +38,7 @@ CRATES="
 	windows_x86_64_msvc@0.52.6
 "
 
-inherit cargo
+inherit lua-single rust cmake cargo
 
 DESCRIPTION="Dora (Special Super Rare) Game Engine"
 HOMEPAGE="https://dora-ssr.net/"
