@@ -98,7 +98,7 @@ src_compile() {
 
 	# Rust bindings
 	(
-		cd Source/Rust && cargo build --release --target x86_64-unknown-linux-gnu || die
+		cd Source/Rust && ${CARGO} build --release --target x86_64-unknown-linux-gnu || die
 	)
 
 	cd Projects/Linux
