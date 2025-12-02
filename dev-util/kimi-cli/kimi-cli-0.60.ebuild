@@ -14,11 +14,9 @@ SLOT="0"
 IUSE=""
 
 RDEPEND="
-	dev-python/aiohttp[${PYTHON_USEDEP}]
-	dev-python/websockets[${PYTHON_USEDEP}]
+	dev-python/typer[${PYTHON_USEDEP}]
 "
 
 DEPEND="
 	${RDEPEND}
-	dev-python/setuptools[${PYTHON_USEDEP}]
 "
