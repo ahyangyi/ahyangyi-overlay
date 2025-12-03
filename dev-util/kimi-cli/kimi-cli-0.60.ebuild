@@ -15,6 +15,7 @@ IUSE=""
 
 RDEPEND="
 	dev-python/typer[${PYTHON_USEDEP}]
+	dev-python/kosong[${PYTHON_USEDEP}]
 "
 
 DEPEND="
