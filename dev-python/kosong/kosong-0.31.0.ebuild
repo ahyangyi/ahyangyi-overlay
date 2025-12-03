@@ -15,6 +15,7 @@ IUSE=""
 
 RDEPEND="
 	dev-python/loguru[${PYTHON_USEDEP}]
+	>=dev-python/anthropic-0.75.0[${PYTHON_USEDEP}]
 "
 
 DEPEND="
