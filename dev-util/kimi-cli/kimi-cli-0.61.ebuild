@@ -14,8 +14,10 @@ SLOT="0"
 IUSE=""
 
 RDEPEND="
+	>=dev-python/aiofiles-25.1.0[${PYTHON_USEDEP}]
 	dev-python/typer[${PYTHON_USEDEP}]
-	dev-python/kosong[${PYTHON_USEDEP}]
+	>=dev-python/kosong-0.31.0[${PYTHON_USEDEP}]
+	=dev-python/pykaos-0.3.0[${PYTHON_USEDEP}]
 "
 
 DEPEND="
