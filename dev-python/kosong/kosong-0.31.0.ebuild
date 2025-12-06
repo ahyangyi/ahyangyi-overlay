@@ -14,8 +14,10 @@ SLOT="0"
 IUSE=""
 
 RDEPEND="
-	dev-python/loguru[${PYTHON_USEDEP}]
+	>=dev-python/loguru-0.7.3[${PYTHON_USEDEP}]
 	>=dev-python/anthropic-0.75.0[${PYTHON_USEDEP}]
+	>=dev-python/jsonschema-4.25.1[${PYTHON_USEDEP}]
+	>=dev-python/pydantic-2.12.5[${PYTHON_USEDEP}]
 "
 
 DEPEND="
