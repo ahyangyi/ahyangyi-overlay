@@ -9,7 +9,7 @@ SRC_URI="https://github.com/JGRennison/OpenTTD-patches/archive/refs/tags/jgrpp-$
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~arm64 ~ppc64 ~x86"
-IUSE="allegro cpu_flags_x86_sse debug dedicated +fluidsynth icu +lzma lzo +openmedia +png +sdl timidity +truetype +zlib jgrpp_postfix"
+IUSE="allegro cpu_flags_x86_sse +curl debug dedicated +fluidsynth icu +lzma lzo +openmedia +opus +png +sdl timidity +truetype +zlib +zstd jgrpp_postfix"
 REQUIRED_USE="!dedicated? ( || ( allegro sdl ) )"
 
 S=${WORKDIR}/OpenTTD-patches-jgrpp-${PV}
@@ -33,11 +33,14 @@ RDEPEND="
 			media-libs/freetype:2
 			sys-libs/zlib:=
 		)
+		opus? ( media-libs/opusfile )
 	)
+	curl? ( net-misc/curl )
 	lzma? ( app-arch/xz-utils )
 	lzo? ( dev-libs/lzo:2 )
 	png? ( media-libs/libpng:= )
 	zlib? ( sys-libs/zlib:= )
+	zstd? ( app-arch/zstd:= )
 "
 DEPEND="${RDEPEND}"
 BDEPEND="
@@ -99,7 +102,10 @@ src_configure() {
 		-DCMAKE_DISABLE_FIND_PACKAGE_SDL=ON
 		-DCMAKE_DISABLE_FIND_PACKAGE_SDL2=$(usex !sdl)
 		-DCMAKE_DISABLE_FIND_PACKAGE_SSE=$(usex !cpu_flags_x86_sse)
+		-DCMAKE_DISABLE_FIND_PACKAGE_CURL=$(usex !curl)
+		-DCMAKE_DISABLE_FIND_PACKAGE_OpusFile=$(usex !opus)
 		-DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=$(usex !zlib)
+		-DCMAKE_DISABLE_FIND_PACKAGE_ZSTD=$(usex !zstd)
 	)
 
 	cmake_src_configure

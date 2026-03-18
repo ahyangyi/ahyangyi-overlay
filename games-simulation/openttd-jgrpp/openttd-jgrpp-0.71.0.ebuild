@@ -9,7 +9,7 @@ SRC_URI="https://github.com/JGRennison/OpenTTD-patches/archive/refs/tags/jgrpp-$
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~arm64 ~ppc64 ~x86"
-IUSE="allegro cpu_flags_x86_sse +curl debug dedicated +fluidsynth icu +lzma lzo +openmedia +png +sdl timidity +truetype +zlib +zstd jgrpp_postfix"
+IUSE="allegro cpu_flags_x86_sse +curl debug dedicated +fluidsynth icu +lzma lzo +openmedia +opus +png +sdl timidity +truetype +zlib +zstd jgrpp_postfix"
 REQUIRED_USE="!dedicated? ( || ( allegro sdl ) )"
 
 S=${WORKDIR}/OpenTTD-patches-jgrpp-${PV}
@@ -23,6 +23,7 @@ RDEPEND="
 	!dedicated? (
 		allegro? ( media-libs/allegro:5 )
 		fluidsynth? ( media-sound/fluidsynth )
+		opus? ( media-libs/opusfile )
 		icu? (
 			>=dev-libs/icu-58.1:=
 			media-libs/harfbuzz
@@ -92,6 +93,9 @@ src_configure() {
 		-DCMAKE_DISABLE_FIND_PACKAGE_Fontconfig=$(usex !truetype)
 		-DCMAKE_DISABLE_FIND_PACKAGE_Fluidsynth=$(usex !fluidsynth)
 		-DCMAKE_DISABLE_FIND_PACKAGE_ICU=$(usex !icu)
+		-DCMAKE_DISABLE_FIND_PACKAGE_CURL=$(usex !curl)
+		-DCMAKE_DISABLE_FIND_PACKAGE_OpusFile=$(usex !opus)
+		-DCMAKE_DISABLE_FIND_PACKAGE_ZSTD=$(usex !zstd)
 		-DCMAKE_DISABLE_FIND_PACKAGE_LibLZMA=$(usex !lzma)
 		-DCMAKE_DISABLE_FIND_PACKAGE_LZO=$(usex !lzo)
 		-DCMAKE_DISABLE_FIND_PACKAGE_PNG=$(usex !png)
@@ -101,9 +105,7 @@ src_configure() {
 		-DCMAKE_DISABLE_FIND_PACKAGE_SDL=ON
 		-DCMAKE_DISABLE_FIND_PACKAGE_SDL2=$(usex !sdl)
 		-DCMAKE_DISABLE_FIND_PACKAGE_SSE=$(usex !cpu_flags_x86_sse)
-		-DCMAKE_DISABLE_FIND_PACKAGE_CURL=$(usex !curl)
 		-DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=$(usex !zlib)
-		-DCMAKE_DISABLE_FIND_PACKAGE_ZSTD=$(usex !zstd)
 	)
 
 	cmake_src_configure
