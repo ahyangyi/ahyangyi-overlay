@@ -1,12 +1,14 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10,11,12,13} )
+PYTHON_COMPAT=( python3_{10,11,12,13,14} )
 inherit distutils-r1
 
 DESCRIPTION="GenAI Python SDK"
 HOMEPAGE="https://github.com/googleapis/python-genai"
-SRC_URI="https://github.com/googleapis/python-genai/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz"
+SRC_URI="https://github.com/googleapis/python-genai/archive/refs/tags/v${PV}.tar.gz -> ${P}.gh.tar.gz"
+
+S="${WORKDIR}/python-genai-${PV}"
 
 LICENSE="Apache-2.0"
 SLOT="0"
@@ -25,8 +27,6 @@ RDEPEND="
 	>=dev-python/distro-1.7[${PYTHON_USEDEP}]
 	dev-python/sniffio[${PYTHON_USEDEP}]
 "
-
-S="${WORKDIR}/python-genai-${PV}"
 
 src_prepare() {
 	sed -i 's/\[build-system\]/[build-system]\nbuild-backend = "setuptools.build_meta"/' pyproject.toml || die

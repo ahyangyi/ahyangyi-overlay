@@ -2,7 +2,7 @@ EAPI=8
 
 DISTUTILS_EXT=1
 DISTUTILS_USE_PEP517=maturin
-PYTHON_COMPAT=( python3_{10,11,12,13} )
+PYTHON_COMPAT=( python3_{10,11,12,13,14} )
 
 CRATES="
 	ahash@0.8.12
@@ -146,9 +146,11 @@ inherit cargo distutils-r1
 DESCRIPTION="Fast iterable JSON parser"
 HOMEPAGE="https://github.com/pydantic/jiter"
 SRC_URI="
-	https://github.com/pydantic/jiter/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz
+	https://github.com/pydantic/jiter/archive/refs/tags/v${PV}.tar.gz -> ${P}.gh.tar.gz
 	${CARGO_CRATE_URIS}
 "
+
+S="${WORKDIR}/jiter-${PV}"
 
 LICENSE="MIT"
 # Dependent crate licenses
@@ -158,8 +160,6 @@ LICENSE+="
 "
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-
-S="${WORKDIR}/jiter-${PV}"
 
 QA_FLAGS_IGNORED=".*"
 

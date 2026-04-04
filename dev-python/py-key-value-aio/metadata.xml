@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<upstream>
+		<remote-id type="github">jlowin/py-key-value</remote-id>
+		<remote-id type="pypi">py-key-value-aio</remote-id>
+	</upstream>
+</pkgmetadata>

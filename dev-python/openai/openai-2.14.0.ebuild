@@ -1,12 +1,14 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=hatchling
-PYTHON_COMPAT=( python3_{10,11,12,13} )
+PYTHON_COMPAT=( python3_{10,11,12,13,14} )
 inherit distutils-r1
 
 DESCRIPTION="The official Python library for the OpenAI API"
 HOMEPAGE="https://github.com/openai/openai-python"
-SRC_URI="https://github.com/openai/openai-python/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz"
+SRC_URI="https://github.com/openai/openai-python/archive/refs/tags/v${PV}.tar.gz -> ${P}.gh.tar.gz"
+
+S="${WORKDIR}/openai-python-${PV}"
 
 LICENSE="Apache-2.0"
 SLOT="0"
@@ -22,5 +24,3 @@ RDEPEND="
 	dev-python/tqdm[${PYTHON_USEDEP}]
 	>=dev-python/jiter-0.10[${PYTHON_USEDEP}]
 "
-
-S="${WORKDIR}/openai-python-${PV}"

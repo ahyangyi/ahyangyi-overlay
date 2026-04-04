@@ -2,12 +2,13 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..11} pypy3 )
+DISTUTILS_USE_PEP517=setuptools
+PYTHON_COMPAT=( python3_{8..14} pypy3 )
 inherit distutils-r1
 
 DESCRIPTION="Create and extract conda packages of various formats"
 HOMEPAGE="https://github.com/conda/conda-package-handling"
-SRC_URI="https://github.com/conda/conda-package-handling/archive/${PV}.tar.gz -> ${P}.tar.gz"
+SRC_URI="https://github.com/conda/conda-package-handling/archive/${PV}.tar.gz -> ${P}.gh.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
@@ -19,7 +20,6 @@ DEPEND="
 	dev-python/six[${PYTHON_USEDEP}]"
 
 RDEPEND="${DEPEND}"
-BDEPEND=""
 
 distutils_enable_tests pytest
 

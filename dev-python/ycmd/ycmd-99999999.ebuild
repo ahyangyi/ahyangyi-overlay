@@ -1,18 +1,18 @@
-EAPI=7
+EAPI=8
 
-PYTHON_COMPAT=( python{2_{6,7},3_{4,5,6,7,8}} )
+PYTHON_COMPAT=( python3_{10..14} )
 
-inherit eutils multilib python-single-r1 cmake git-r3 vcs-clean
+inherit cmake multilib python-single-r1 git-r3 vcs-clean
 
 EGIT_REPO_URI="https://github.com/ycm-core/ycmd.git"
-DESCRIPTION="A code-completion & code-comprehension server "
+DESCRIPTION="A code-completion & code-comprehension server"
 HOMEPAGE="https://github.com/ycm-core/ycmd/"
 EGIT_SUBMODULES=(
 	'*'
 	'-third_party/bottle'
 	'-third_party/waitress'
 	'-third_party/jedi_deps/numpydoc'
-	)
+)
 
 LICENSE="GPL-3"
 SLOT="0"
@@ -27,14 +27,12 @@ COMMON_DEPEND="
 RDEPEND="
 	${COMMON_DEPEND}
 	$(python_gen_cond_dep 'dev-python/bottle[${PYTHON_USEDEP}]')
-	$(python_gen_cond_dep 'virtual/python-futures[${PYTHON_USEDEP}]')
 	$(python_gen_cond_dep 'dev-python/future[${PYTHON_USEDEP}]')
 	$(python_gen_cond_dep 'dev-python/sh[${PYTHON_USEDEP}]')
 	$(python_gen_cond_dep 'dev-python/waitress[${PYTHON_USEDEP}]')
 	$(python_gen_cond_dep 'dev-python/watchdog[${PYTHON_USEDEP}]')
 	$(python_gen_cond_dep 'dev-python/requests[${PYTHON_USEDEP}]')
 	$(python_gen_cond_dep 'dev-python/jedi[${PYTHON_USEDEP}]')
-	$(python_gen_cond_dep 'dev-python/futures[${PYTHON_USEDEP}]' -2)
 "
 DEPEND="
 	${COMMON_DEPEND}
@@ -64,7 +62,6 @@ src_prepare() {
 
 	python_fix_shebang -f third_party/cregex/tools/build_regex_unicode.py
 
-	# Argparse is included in python 2.7 / 3
 	for third_party_module in bottle waitress; do
 		rm -r "${S}"/third_party/${third_party_module} || die "Failed to remove third party module ${third_party_module}"
 	done
@@ -76,20 +73,12 @@ src_prepare() {
 	done
 	rm -r "${S}"/cpp/BoostParts || die "Failed to remove bundled boost"
 
-	if [ $(echo ${EPYTHON} | grep python2 > /dev/null) ]
-	then
-		rm -r "${S}"/third_party/cregex/regex_3 || die "Failed to remove third party module cregex_3"
-	else
-		rm -r "${S}"/third_party/cregex/regex_2 || die "Failed to remove third party module cregex_2"
-		rm -r "${S}"/third_party/watchdog_deps || die "Failed to remove third party module watchdog_deps"
-	fi
+	rm -r "${S}"/third_party/cregex/regex_2 || die "Failed to remove third party module cregex_2"
+	rm -r "${S}"/third_party/watchdog_deps || die "Failed to remove third party module watchdog_deps"
 
-	# boost::python is installed as is on Gentoo for both python2 & python3; hence we modify their CMakeLists accordingly
 	sed -i 's/APPEND Boost_COMPONENTS python3/APPEND Boost_COMPONENTS python/g' "${S}"/cpp/ycm/CMakeLists.txt
 
-	cmake-utils_src_prepare
-
-	eapply_user
+	cmake_src_prepare
 }
 
 src_configure() {
@@ -98,18 +87,13 @@ src_configure() {
 		-DUSE_SYSTEM_LIBCLANG="$(usex clang)"
 		-DUSE_SYSTEM_BOOST=ON
 		-DUSE_SYSTEM_GMOCK=ON
+		-DUSE_PYTHON2=OFF
 	)
-	if [ $(echo ${EPYTHON} | grep python2 > /dev/null) ]
-	then
-		mycmakeargs+=( -DUSE_PYTHON2=ON )
-	else
-		mycmakeargs+=( -DUSE_PYTHON2=OFF )
-	fi
-	cmake-utils_src_configure
+	cmake_src_configure
 }
 
 src_test() {
-	cd "${S}/cpp/ycm/tests"
+	cd "${S}/cpp/ycm/tests" || die
 	LD_LIBRARY_PATH="${EROOT}"/usr/$(get_libdir)/llvm \
 		./ycm_core_tests || die
 }

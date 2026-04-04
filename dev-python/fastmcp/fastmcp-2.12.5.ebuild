@@ -6,7 +6,9 @@ inherit distutils-r1
 
 DESCRIPTION="The fast, Pythonic way to build MCP servers and clients"
 HOMEPAGE="https://gofastmcp.com"
-SRC_URI="https://github.com/PrefectHQ/fastmcp/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz"
+SRC_URI="https://github.com/PrefectHQ/fastmcp/archive/refs/tags/v${PV}.tar.gz -> ${P}.gh.tar.gz"
+
+S="${WORKDIR}/fastmcp-${PV}"
 
 LICENSE="Apache-2.0"
 SLOT="0"
@@ -27,10 +29,8 @@ RDEPEND="
 	>=dev-python/openapi-core-0.19.5[${PYTHON_USEDEP}]
 "
 
-S="${WORKDIR}/fastmcp-${PV}"
-
 src_prepare() {
 	# Replace dynamic version with static version
-	sed -i "s/^dynamic = \[\"version\"\]/version = \"${PV}\"/" pyproject.toml || die
+	sed -i "s/^dynamic = \\[\"version\"\\]/version = \"${PV}\"/" pyproject.toml || die
 	distutils-r1_src_prepare
 }
