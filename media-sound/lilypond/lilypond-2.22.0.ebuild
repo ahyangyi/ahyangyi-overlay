@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
-PYTHON_COMPAT=( python3_{7..11} )
+PYTHON_COMPAT=( python3_{7..15} )
 
 inherit elisp-common autotools python-single-r1 toolchain-funcs xdg-utils
 

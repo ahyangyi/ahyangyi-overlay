@@ -5,7 +5,7 @@ EAPI=8
 
 GUILE_REQ_USE="deprecated,regex"
 GUILE_COMPAT=( 2-2 3-0 )
-PYTHON_COMPAT=( python3_{10..13} )
+PYTHON_COMPAT=( python3_{10..15} )
 
 inherit elisp-common autotools guile-single python-single-r1 toolchain-funcs xdg-utils
 
