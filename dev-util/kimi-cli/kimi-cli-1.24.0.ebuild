@@ -1,7 +1,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=uv-build
-PYTHON_COMPAT=( python3_{13,14} )
+PYTHON_COMPAT=( python3_{13,14,15} )
 inherit distutils-r1
 
 DESCRIPTION="A CLI agent for software development and terminal operations."
